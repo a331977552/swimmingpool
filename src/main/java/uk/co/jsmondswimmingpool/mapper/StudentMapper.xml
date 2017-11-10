@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="uk.co.jsmondswimmingpool.mapper.StudentMapper" >
+  <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.Student" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="VARCHAR" />
+    <result column="Max" property="max" jdbcType="INTEGER" />
+    <result column="min" property="min" jdbcType="INTEGER" />
+    <result column="current" property="current" jdbcType="INTEGER" />
+    <result column="weeks" property="weeks" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="phoneNumber" property="phonenumber" jdbcType="VARCHAR" />
+    <result column="parentPhoneNumber" property="parentphonenumber" jdbcType="VARCHAR" />
+    <result column="parentName" property="parentname" jdbcType="VARCHAR" />
+    <result column="MedicalCondition" property="medicalcondition" jdbcType="VARCHAR" />
+    <result column="Paid" property="paid" jdbcType="INTEGER" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+    <result column="enrolmentDate" property="enrolmentdate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, name, level, Max, min, current, weeks, address, phoneNumber, parentPhoneNumber, 
+    parentName, MedicalCondition, Paid, Note, enrolmentDate
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.StudentExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from student
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from student
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="uk.co.jsmondswimmingpool.entity.StudentExample" >
+    delete from student
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
+  <selectKey keyProperty="id" resultType="Long" order="AFTER">
+  		select LAST_INSERT_ID()
+  	</selectKey>
+    insert into student (id, name, level, 
+      Max, min, current, 
+      weeks, address, phoneNumber, 
+      parentPhoneNumber, parentName, MedicalCondition, 
+      Paid, Note, enrolmentDate
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
+      #{max,jdbcType=INTEGER}, #{min,jdbcType=INTEGER}, #{current,jdbcType=INTEGER}, 
+      #{weeks,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{phonenumber,jdbcType=VARCHAR}, 
+      #{parentphonenumber,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, #{medicalcondition,jdbcType=VARCHAR}, 
+      #{paid,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, #{enrolmentdate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="max != null" >
+        Max,
+      </if>
+      <if test="min != null" >
+        min,
+      </if>
+      <if test="current != null" >
+        current,
+      </if>
+      <if test="weeks != null" >
+        weeks,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="phonenumber != null" >
+        phoneNumber,
+      </if>
+      <if test="parentphonenumber != null" >
+        parentPhoneNumber,
+      </if>
+      <if test="parentname != null" >
+        parentName,
+      </if>
+      <if test="medicalcondition != null" >
+        MedicalCondition,
+      </if>
+      <if test="paid != null" >
+        Paid,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+      <if test="enrolmentdate != null" >
+        enrolmentDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null" >
+        #{max,jdbcType=INTEGER},
+      </if>
+      <if test="min != null" >
+        #{min,jdbcType=INTEGER},
+      </if>
+      <if test="current != null" >
+        #{current,jdbcType=INTEGER},
+      </if>
+      <if test="weeks != null" >
+        #{weeks,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenumber != null" >
+        #{phonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="parentphonenumber != null" >
+        #{parentphonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="parentname != null" >
+        #{parentname,jdbcType=VARCHAR},
+      </if>
+      <if test="medicalcondition != null" >
+        #{medicalcondition,jdbcType=VARCHAR},
+      </if>
+      <if test="paid != null" >
+        #{paid,jdbcType=INTEGER},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolmentdate != null" >
+        #{enrolmentdate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="uk.co.jsmondswimmingpool.entity.StudentExample" resultType="java.lang.Integer" >
+    select count(*) from student
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update student
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=VARCHAR},
+      </if>
+      <if test="record.max != null" >
+        Max = #{record.max,jdbcType=INTEGER},
+      </if>
+      <if test="record.min != null" >
+        min = #{record.min,jdbcType=INTEGER},
+      </if>
+      <if test="record.current != null" >
+        current = #{record.current,jdbcType=INTEGER},
+      </if>
+      <if test="record.weeks != null" >
+        weeks = #{record.weeks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phonenumber != null" >
+        phoneNumber = #{record.phonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentphonenumber != null" >
+        parentPhoneNumber = #{record.parentphonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentname != null" >
+        parentName = #{record.parentname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.medicalcondition != null" >
+        MedicalCondition = #{record.medicalcondition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paid != null" >
+        Paid = #{record.paid,jdbcType=INTEGER},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.enrolmentdate != null" >
+        enrolmentDate = #{record.enrolmentdate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update student
+    set id = #{record.id,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=VARCHAR},
+      Max = #{record.max,jdbcType=INTEGER},
+      min = #{record.min,jdbcType=INTEGER},
+      current = #{record.current,jdbcType=INTEGER},
+      weeks = #{record.weeks,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      phoneNumber = #{record.phonenumber,jdbcType=VARCHAR},
+      parentPhoneNumber = #{record.parentphonenumber,jdbcType=VARCHAR},
+      parentName = #{record.parentname,jdbcType=VARCHAR},
+      MedicalCondition = #{record.medicalcondition,jdbcType=VARCHAR},
+      Paid = #{record.paid,jdbcType=INTEGER},
+      Note = #{record.note,jdbcType=VARCHAR},
+      enrolmentDate = #{record.enrolmentdate,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
+    update student
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null" >
+        Max = #{max,jdbcType=INTEGER},
+      </if>
+      <if test="min != null" >
+        min = #{min,jdbcType=INTEGER},
+      </if>
+      <if test="current != null" >
+        current = #{current,jdbcType=INTEGER},
+      </if>
+      <if test="weeks != null" >
+        weeks = #{weeks,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenumber != null" >
+        phoneNumber = #{phonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="parentphonenumber != null" >
+        parentPhoneNumber = #{parentphonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="parentname != null" >
+        parentName = #{parentname,jdbcType=VARCHAR},
+      </if>
+      <if test="medicalcondition != null" >
+        MedicalCondition = #{medicalcondition,jdbcType=VARCHAR},
+      </if>
+      <if test="paid != null" >
+        Paid = #{paid,jdbcType=INTEGER},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="enrolmentdate != null" >
+        enrolmentDate = #{enrolmentdate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
+    update student
+    set name = #{name,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      Max = #{max,jdbcType=INTEGER},
+      min = #{min,jdbcType=INTEGER},
+      current = #{current,jdbcType=INTEGER},
+      weeks = #{weeks,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      phoneNumber = #{phonenumber,jdbcType=VARCHAR},
+      parentPhoneNumber = #{parentphonenumber,jdbcType=VARCHAR},
+      parentName = #{parentname,jdbcType=VARCHAR},
+      MedicalCondition = #{medicalcondition,jdbcType=VARCHAR},
+      Paid = #{paid,jdbcType=INTEGER},
+      Note = #{note,jdbcType=VARCHAR},
+      enrolmentDate = #{enrolmentdate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
