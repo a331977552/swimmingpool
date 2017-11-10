@@ -26,7 +26,8 @@ public class StudentTest {
 		public void findById() {
 			try {
 				Student student = studentService.findById(new Long(1));
-				System.out.println(student);
+				System.out.println(student.getName());
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
