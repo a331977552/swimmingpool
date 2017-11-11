@@ -9,6 +9,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import uk.co.jsmondswimmingpool.entity.Student;
+import uk.co.jsmondswimmingpool.entity.Tutor;
+import uk.co.jsmondswimmingpool.entity.custom.PageBean;
+import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.service.IStudentService;
 
 
@@ -33,6 +36,36 @@ public class StudentTest {
 			}
 			
 		}
+		
+		
+		@Test
+		public void getStudentsByTutorId() {
+			try {
+				TutorVo tutorVo=new TutorVo();
+				Tutor tutor=new Tutor();
+				tutor.setId((long) 1);
+				tutorVo.setTutor(tutor);
+				
+				PageBean<Student> student = studentService.getStudentsByTutorId(tutorVo);
+				tutorVo.setCurrentPage(student.getCurrentPage()+1);
+				PageBean<Student> student2 = studentService.getStudentsByTutorId(tutorVo);
+				tutorVo.setCurrentPage(student.getCurrentPage()+1);
+				PageBean<Student> student3 = studentService.getStudentsByTutorId(tutorVo);
+				
+				
+				System.out.println(student.getBeans().size());
+				System.out.println(student2.getBeans().size());
+				System.out.println(student3.getBeans().size());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		
+		
 		
 		
 		

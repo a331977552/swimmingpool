@@ -111,9 +111,6 @@
     </if>
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
-  <selectKey keyProperty="id" resultType="Long" order="AFTER">
-  		select LAST_INSERT_ID()
-  	</selectKey>
     insert into student (id, name, level, 
       Max, min, current, 
       weeks, address, phoneNumber, 

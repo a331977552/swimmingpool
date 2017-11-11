@@ -27,4 +27,5 @@ public interface CourseMapper {
     int updateByPrimaryKeySelective(Course record);
 
     int updateByPrimaryKey(Course record);
+    List<Long> getCourseIdsByTutorId(Long id);
 }

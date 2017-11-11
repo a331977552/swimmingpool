@@ -150,4 +150,9 @@ public class Student {
     public void setEnrolmentdate(String enrolmentdate) {
         this.enrolmentdate = enrolmentdate == null ? null : enrolmentdate.trim();
     }
+    
+    @Override
+    public int hashCode() {
+    	return id.intValue();
+    }
 }

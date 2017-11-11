@@ -1,6 +1,5 @@
 package uk.co.jsmondswimmingpool.service;
 
-import uk.co.jsmondswimmingpool.entity.CourseChoosingExample;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.StudentExample;
 import uk.co.jsmondswimmingpool.entity.custom.PageBean;
@@ -21,5 +20,5 @@ public interface IStudentService {
 
 	void deleteStudent(Student student) throws Exception;
 	Long getNumberOfStudent(StudentExample example) throws Exception;
-	 Integer getNumberOfStudentByTutorId(CourseChoosingExample example ) throws Exception;
+
 }

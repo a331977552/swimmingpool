@@ -3,7 +3,6 @@
 <mapper namespace="uk.co.jsmondswimmingpool.mapper.CourseChoosingMapper" >
   <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.CourseChoosing" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="tutorId" property="tutorid" jdbcType="BIGINT" />
     <result column="studentId" property="studentid" jdbcType="BIGINT" />
     <result column="CourseId" property="courseid" jdbcType="BIGINT" />
   </resultMap>
@@ -66,7 +65,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, tutorId, studentId, CourseId
+    id, studentId, CourseId
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.CourseChoosingExample" >
     select
@@ -88,6 +87,8 @@
     from course_choosing
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from course_choosing
     where id = #{id,jdbcType=BIGINT}
@@ -99,19 +100,16 @@
     </if>
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.CourseChoosing" >
-    insert into course_choosing (id, tutorId, studentId, 
-      CourseId)
-    values (#{id,jdbcType=BIGINT}, #{tutorid,jdbcType=BIGINT}, #{studentid,jdbcType=BIGINT}, 
-      #{courseid,jdbcType=BIGINT})
+    insert into course_choosing (id, studentId, CourseId
+      )
+    values (#{id,jdbcType=BIGINT}, #{studentid,jdbcType=BIGINT}, #{courseid,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.CourseChoosing" >
     insert into course_choosing
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
-      </if>
-      <if test="tutorid != null" >
-        tutorId,
       </if>
       <if test="studentid != null" >
         studentId,
@@ -123,9 +121,6 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
-      </if>
-      <if test="tutorid != null" >
-        #{tutorid,jdbcType=BIGINT},
       </if>
       <if test="studentid != null" >
         #{studentid,jdbcType=BIGINT},
@@ -147,9 +142,6 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.tutorid != null" >
-        tutorId = #{record.tutorid,jdbcType=BIGINT},
-      </if>
       <if test="record.studentid != null" >
         studentId = #{record.studentid,jdbcType=BIGINT},
       </if>
@@ -164,7 +156,6 @@
   <update id="updateByExample" parameterType="map" >
     update course_choosing
     set id = #{record.id,jdbcType=BIGINT},
-      tutorId = #{record.tutorid,jdbcType=BIGINT},
       studentId = #{record.studentid,jdbcType=BIGINT},
       CourseId = #{record.courseid,jdbcType=BIGINT}
     <if test="_parameter != null" >
@@ -174,9 +165,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.CourseChoosing" >
     update course_choosing
     <set >
-      <if test="tutorid != null" >
-        tutorId = #{tutorid,jdbcType=BIGINT},
-      </if>
       <if test="studentid != null" >
         studentId = #{studentid,jdbcType=BIGINT},
       </if>
@@ -188,8 +176,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.CourseChoosing" >
     update course_choosing
-    set tutorId = #{tutorid,jdbcType=BIGINT},
-      studentId = #{studentid,jdbcType=BIGINT},
+    set studentId = #{studentid,jdbcType=BIGINT},
       CourseId = #{courseid,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

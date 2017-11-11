@@ -3,8 +3,6 @@ package uk.co.jsmondswimmingpool.entity;
 public class CourseChoosing {
     private Long id;
 
-    private Long tutorid;
-
     private Long studentid;
 
     private Long courseid;
@@ -15,14 +13,6 @@ public class CourseChoosing {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getTutorid() {
-        return tutorid;
-    }
-
-    public void setTutorid(Long tutorid) {
-        this.tutorid = tutorid;
     }
 
     public Long getStudentid() {

@@ -164,66 +164,6 @@ public class CourseChoosingExample {
             return (Criteria) this;
         }
 
-        public Criteria andTutoridIsNull() {
-            addCriterion("tutorId is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridIsNotNull() {
-            addCriterion("tutorId is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridEqualTo(Long value) {
-            addCriterion("tutorId =", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridNotEqualTo(Long value) {
-            addCriterion("tutorId <>", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridGreaterThan(Long value) {
-            addCriterion("tutorId >", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridGreaterThanOrEqualTo(Long value) {
-            addCriterion("tutorId >=", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridLessThan(Long value) {
-            addCriterion("tutorId <", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridLessThanOrEqualTo(Long value) {
-            addCriterion("tutorId <=", value, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridIn(List<Long> values) {
-            addCriterion("tutorId in", values, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridNotIn(List<Long> values) {
-            addCriterion("tutorId not in", values, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridBetween(Long value1, Long value2) {
-            addCriterion("tutorId between", value1, value2, "tutorid");
-            return (Criteria) this;
-        }
-
-        public Criteria andTutoridNotBetween(Long value1, Long value2) {
-            addCriterion("tutorId not between", value1, value2, "tutorid");
-            return (Criteria) this;
-        }
-
         public Criteria andStudentidIsNull() {
             addCriterion("studentId is null");
             return (Criteria) this;

@@ -1,13 +1,19 @@
 package uk.co.jsmondswimmingpool.service.imp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.CourseChoosingExample;
+import uk.co.jsmondswimmingpool.entity.CourseExample;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.StudentExample;
 import uk.co.jsmondswimmingpool.entity.StudentExample.Criteria;
@@ -16,6 +22,7 @@ import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
 import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.exception.NullIdException;
 import uk.co.jsmondswimmingpool.mapper.CourseChoosingMapper;
+import uk.co.jsmondswimmingpool.mapper.CourseMapper;
 import uk.co.jsmondswimmingpool.mapper.StudentMapper;
 import uk.co.jsmondswimmingpool.service.IStudentService;
 import uk.co.jsmondswimmingpool.utils.TextUtils;
@@ -31,6 +38,9 @@ public class StudentService implements IStudentService {
 	StudentMapper mapper;
 	@Autowired
 	CourseChoosingMapper mapperchoosing;
+	@Autowired
+	CourseMapper courseMapper;
+	
 	@Override
 	public PageBean<Student> getAll(StudentVo vo) {
 	
@@ -85,34 +95,34 @@ public class StudentService implements IStudentService {
 		if(tutorVo==null || tutorVo.getTutor()==null || tutorVo.getTutor().getId()==null)
 			
 			return null;
-		CourseChoosingExample example=new CourseChoosingExample();
-		uk.co.jsmondswimmingpool.entity.CourseChoosingExample.Criteria
-		criteria = example.createCriteria();
-		criteria.andTutoridEqualTo(tutorVo.getTutor().getId());
-		Integer numberOfStudent=getNumberOfStudentByTutorId(example);
+
+		List<Long> studentIds = courseMapper.getCourseIdsByTutorId(tutorVo.getTutor().getId());
+		
+	
+		
+		Integer numberOfStudent=studentIds.size();
 		
 		PageBean<Student> bean= new PageBean<>(tutorVo.getCurrentPage(), numberOfStudent.intValue(), tutorVo.getPageSize());
-	
-		// bean.getStartCount(), bean.getPageSize();
-		Integer startCount = bean.getStartCount();
-		example.setOrderByClause("id desc limit " + startCount + "," + bean.getPageSize());
-		List<CourseChoosing> studentId = mapperchoosing.selectByExample(example);
-		List<Student> vos=new ArrayList<>();
-		
-		
-		for (CourseChoosing student : studentId) {
-			Student selectByPrimaryKey = mapper.selectByPrimaryKey(student.getStudentid());
-			vos.add(selectByPrimaryKey);
-		}
-	
-		bean.setBeans(vos);
 
 		
 		
+		Integer startCount = bean.getStartCount();
+		Integer endPage=null;
+		if(startCount+bean.getPageSize()> numberOfStudent) {
+			endPage=numberOfStudent;
+			
+		}else {
+			endPage=startCount+bean.getPageSize();
+		}
+		List<Student> beans=new ArrayList<>();
 		
-		
-		
-		
+		for(int i =startCount;i<endPage;i++) {
+			
+			Student student = findById(studentIds.get(i));
+			beans.add(student);
+			
+		}
+		bean.setBeans(beans);
 		return bean;
 	}
 
@@ -155,11 +165,6 @@ public class StudentService implements IStudentService {
 	}
 
 
-	@Override
-	public Integer getNumberOfStudentByTutorId(CourseChoosingExample example) {
-			
-		
-		return mapperchoosing.countByExample(example);
-	}
+
 
 }

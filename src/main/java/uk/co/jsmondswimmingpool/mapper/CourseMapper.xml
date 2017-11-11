@@ -7,6 +7,11 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="tutorId" property="tutorid" jdbcType="BIGINT" />
   </resultMap>
+  
+    <resultMap id="IDResultMap" type="Long" >
+    <id column="studentId"   jdbcType="BIGINT" />
+  </resultMap>
+  
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -82,6 +87,14 @@
       order by ${orderByClause}
     </if>
   </select>
+  
+  <select id="getCourseIdsByTutorId" resultMap="IDResultMap" parameterType="Long" >
+  
+	select distinct cc.studentId   from course_choosing  cc
+	 where courseId in 
+	  (select c.id from course c where tutorId=#{tuturId});
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

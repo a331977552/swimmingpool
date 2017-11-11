@@ -1,15 +1,11 @@
 package uk.co.jsmondswimmingpool.web;
 
-import javax.annotation.Resource;
-
-import org.apache.xmlbeans.impl.validator.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
@@ -25,8 +21,8 @@ public class StudentController {
 	@Autowired
 	IStudentService service;
 
-	@RequestMapping(value = "/students", method = RequestMethod.GET)
-	public @ResponseBody CommonEntity getAllStudents(@RequestBody StudentVo vo) {
+	@RequestMapping(value = "/students", method = RequestMethod.POST)
+	public @ResponseBody CommonEntity getAllStudents(@RequestBody(required=false) StudentVo vo) {
 
 		CommonEntity commonEntity = new CommonEntity();
 		try {
@@ -66,7 +62,7 @@ public class StudentController {
 		return commonEntity;
 	}
 
-	@RequestMapping(value = "/tutor/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity getStudentsByTutorId(TutorVo toturVo) {
 		CommonEntity commonEntity = new CommonEntity();
 		
