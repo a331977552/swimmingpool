@@ -112,6 +112,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Course" >
+  	<selectKey   keyProperty="id"  resultType="Long" order="AFTER" >
+  	select LAST_INSERT_ID()
+  	</selectKey>
     insert into course (id, note, name, 
       tutorId)
     values (#{id,jdbcType=BIGINT}, #{note,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
@@ -154,6 +157,18 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  
+
+  <select id="selectCoursesByStudentId" parameterType="java.lang.Long"  resultMap="BaseResultMap" >
+  
+ 		select * from course where id in (select courseId from course_choosing where studentId= #{id})
+ 		
+ 	
+  </select>
+  
+  
+  
+  
   <update id="updateByExampleSelective" parameterType="map" >
     update course
     <set >

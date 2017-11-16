@@ -22,5 +22,15 @@ public class TextUtils {
 	}
 	
 	
+	
+	public static boolean isNullId(Long tr) {
+		
+		if(tr == null || tr<=0)
+			return true;
+		
+		return false;
+	}
+	
+	
 
 }

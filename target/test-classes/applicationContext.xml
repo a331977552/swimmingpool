@@ -53,7 +53,9 @@
 			id="pc" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc" />
 	</aop:config> -->
-
+<bean class="java.text.SimpleDateFormat" id="simpleDateFormat"   >
+	<constructor-arg value="yyyy-MM-dd"   type="java.lang.String"></constructor-arg>
+	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="uk.co.jsmondswimmingpool.mapper"></property>
 	</bean>

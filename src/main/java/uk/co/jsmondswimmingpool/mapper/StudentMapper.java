@@ -2,8 +2,11 @@ package uk.co.jsmondswimmingpool.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.StudentExample;
+import uk.co.jsmondswimmingpool.entity.custom.SignVo;
 
 public interface StudentMapper {
     int countByExample(StudentExample example);
@@ -27,4 +30,11 @@ public interface StudentMapper {
     int updateByPrimaryKeySelective(Student record);
 
     int updateByPrimaryKey(Student record);
+
+	List<Student> selectByCourseId(Long id);
+
+
+	List<CourseChoosing> selectStuIdAndCourseIdByTodayAndTutorId(SignVo signVo);
+
+	List<Long> selectTimeTableByTutorIdAndCourseDate(SignVo signVo);
 }

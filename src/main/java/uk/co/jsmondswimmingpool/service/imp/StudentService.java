@@ -1,5 +1,7 @@
 package uk.co.jsmondswimmingpool.service.imp;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +12,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.co.jsmondswimmingpool.entity.Achievement;
+import uk.co.jsmondswimmingpool.entity.AchievementExample;
 import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.CourseChoosingExample;
@@ -18,9 +22,11 @@ import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.StudentExample;
 import uk.co.jsmondswimmingpool.entity.StudentExample.Criteria;
 import uk.co.jsmondswimmingpool.entity.custom.PageBean;
+import uk.co.jsmondswimmingpool.entity.custom.SignVo;
 import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
 import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.exception.NullIdException;
+import uk.co.jsmondswimmingpool.mapper.AchievementMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseChoosingMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseMapper;
 import uk.co.jsmondswimmingpool.mapper.StudentMapper;
@@ -40,6 +46,13 @@ public class StudentService implements IStudentService {
 	CourseChoosingMapper mapperchoosing;
 	@Autowired
 	CourseMapper courseMapper;
+	
+	@Autowired
+	AchievementMapper achievementMapper;
+	
+	
+	@Autowired 
+	SimpleDateFormat simpleDate;
 	
 	@Override
 	public PageBean<Student> getAll(StudentVo vo) {
@@ -147,11 +160,11 @@ public class StudentService implements IStudentService {
 	}
 
 	@Override
-	public void deleteStudent(Student student) throws Exception {
-		if(student==null || student.getId()==null || student.getId()<0)
+	public void deleteStudent(Long id) throws Exception {
+		if(TextUtils.isNullId(id))
 			throw new NullIdException("id = null");
 		
-		mapper.deleteByPrimaryKey(student.getId());
+		mapper.deleteByPrimaryKey(id);
 		
 	}
 
@@ -162,6 +175,38 @@ public class StudentService implements IStudentService {
 		
 		
 		return (long) countByExample;
+	}
+
+
+	@Override
+	public List<SignVo> geStudentsSignStatusByTutorId(Long id) {
+		SignVo signVo=new SignVo();
+		signVo.setCourseDate(simpleDate.format(new java.util.Date()));
+		signVo.setTutorId(id);
+		
+		List<CourseChoosing> choosings=mapper.selectStuIdAndCourseIdByTodayAndTutorId(signVo);
+		List<Long> selectTimeTableByTutorIdAndCourseDate = mapper.selectTimeTableByTutorIdAndCourseDate(signVo);
+		
+		
+		System.out.println(selectTimeTableByTutorIdAndCourseDate);
+		
+		return null;
+	}
+
+
+	@Override
+	public List<Achievement> getAchievement(Long id) {
+		if(id==null)
+			return null;
+		AchievementExample example=new AchievementExample();
+		uk.co.jsmondswimmingpool.entity.AchievementExample.Criteria createCriteria = example.createCriteria();
+		createCriteria.andStudentidEqualTo(id);
+		List<Achievement> selectByExample = achievementMapper.selectByExample(example);
+		if(selectByExample==null|| selectByExample.size()==0) {
+			selectByExample=new ArrayList<>();
+		}
+		
+		return selectByExample;
 	}
 
 

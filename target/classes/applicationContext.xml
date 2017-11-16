@@ -31,11 +31,17 @@
 	</bean>
 
 
-
+	
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
+	<aop:config>
+		<aop:pointcut			
+			expression="execution(* uk.co.jsmondswimmingpool.service.imp.*Service.*(..))"
+			id="pc" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc" />
+	</aop:config> 
 	<tx:advice transaction-manager="transactionManager" id="txAdvice">
 		<tx:attributes>
 			<tx:method name="save*" isolation="DEFAULT" read-only="false"
@@ -47,15 +53,13 @@
 			<tx:method name="modify*" />
 		</tx:attributes>
 	</tx:advice>
-	<!-- <aop:config>
-		<aop:pointcut			
-			expression="execution(* uk.co.ukstarjet.service.impl.*ServiceImpl.*(..))"
-			id="pc" />
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc" />
-	</aop:config> -->
+
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="uk.co.jsmondswimmingpool.mapper"></property>
+	</bean>
+	<bean class="java.text.SimpleDateFormat" id="simpleDateFormat"   >
+	<constructor-arg value="yyyy-MM-dd"   type="java.lang.String"></constructor-arg>
 	</bean>
 
 <mvc:resources location="/css" mapping="/css/**"/>				

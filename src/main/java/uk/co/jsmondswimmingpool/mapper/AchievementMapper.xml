@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="uk.co.jsmondswimmingpool.mapper.CourseMapper" >
-  <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.Course" >
+<mapper namespace="uk.co.jsmondswimmingpool.mapper.AchievementMapper" >
+  <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.Achievement" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="note" property="note" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="tutorId" property="tutorid" jdbcType="BIGINT" />
+    <result column="courseItemId" property="courseitemid" jdbcType="BIGINT" />
+    <result column="studentId" property="studentid" jdbcType="BIGINT" />
+    <result column="achievement" property="achievement" jdbcType="VARCHAR" />
   </resultMap>
-  
-    <resultMap id="IDResultMap" type="Long" >
-    <id column="studentId"   jdbcType="BIGINT" />
-  </resultMap>
-  
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -71,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, note, name, tutorId
+    id, courseItemId, studentId, achievement
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.CourseExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.AchievementExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from course
+    from achievement
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,102 +82,79 @@
       order by ${orderByClause}
     </if>
   </select>
-  
-  <select id="getCourseIdsByTutorId" resultMap="IDResultMap" parameterType="Long" >
-  
-	select distinct cc.studentId   from course_choosing  cc
-	 where courseId in 
-	  (select c.id from course c where tutorId=#{tuturId});
-  </select>
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from course
+    from achievement
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from course
+    delete from achievement
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="uk.co.jsmondswimmingpool.entity.CourseExample" >
-    delete from course
+  <delete id="deleteByExample" parameterType="uk.co.jsmondswimmingpool.entity.AchievementExample" >
+    delete from achievement
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Course" >
-  	<selectKey   keyProperty="id"  resultType="Long" order="AFTER" >
-  	select LAST_INSERT_ID()
-  	</selectKey>
-    insert into course (id, note, name, 
-      tutorId)
-    values (#{id,jdbcType=BIGINT}, #{note,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{tutorid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
+    insert into achievement (id, courseItemId, studentId, 
+      achievement)
+    values (#{id,jdbcType=BIGINT}, #{courseitemid,jdbcType=BIGINT}, #{studentid,jdbcType=BIGINT}, 
+      #{achievement,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Course" >
-    insert into course
+  <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
+    insert into achievement
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="note != null" >
-        note,
+      <if test="courseitemid != null" >
+        courseItemId,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="studentid != null" >
+        studentId,
       </if>
-      <if test="tutorid != null" >
-        tutorId,
+      <if test="achievement != null" >
+        achievement,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="note != null" >
-        #{note,jdbcType=VARCHAR},
+      <if test="courseitemid != null" >
+        #{courseitemid,jdbcType=BIGINT},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="studentid != null" >
+        #{studentid,jdbcType=BIGINT},
       </if>
-      <if test="tutorid != null" >
-        #{tutorid,jdbcType=BIGINT},
+      <if test="achievement != null" >
+        #{achievement,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="uk.co.jsmondswimmingpool.entity.CourseExample" resultType="java.lang.Integer" >
-    select count(*) from course
+  <select id="countByExample" parameterType="uk.co.jsmondswimmingpool.entity.AchievementExample" resultType="java.lang.Integer" >
+    select count(*) from achievement
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  
-
-  <select id="selectCoursesByStudentId" parameterType="java.lang.Long"  resultMap="BaseResultMap" >
-  
- 		select * from course where id in (select courseId from course_choosing where studentId= #{id})
- 		
- 	
-  </select>
-  
-  
-  
-  
   <update id="updateByExampleSelective" parameterType="map" >
-    update course
+    update achievement
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.note != null" >
-        note = #{record.note,jdbcType=VARCHAR},
+      <if test="record.courseitemid != null" >
+        courseItemId = #{record.courseitemid,jdbcType=BIGINT},
       </if>
-      <if test="record.name != null" >
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.studentid != null" >
+        studentId = #{record.studentid,jdbcType=BIGINT},
       </if>
-      <if test="record.tutorid != null" >
-        tutorId = #{record.tutorid,jdbcType=BIGINT},
+      <if test="record.achievement != null" >
+        achievement = #{record.achievement,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -190,35 +162,35 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update course
+    update achievement
     set id = #{record.id,jdbcType=BIGINT},
-      note = #{record.note,jdbcType=VARCHAR},
-      name = #{record.name,jdbcType=VARCHAR},
-      tutorId = #{record.tutorid,jdbcType=BIGINT}
+      courseItemId = #{record.courseitemid,jdbcType=BIGINT},
+      studentId = #{record.studentid,jdbcType=BIGINT},
+      achievement = #{record.achievement,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.Course" >
-    update course
+  <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
+    update achievement
     <set >
-      <if test="note != null" >
-        note = #{note,jdbcType=VARCHAR},
+      <if test="courseitemid != null" >
+        courseItemId = #{courseitemid,jdbcType=BIGINT},
       </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+      <if test="studentid != null" >
+        studentId = #{studentid,jdbcType=BIGINT},
       </if>
-      <if test="tutorid != null" >
-        tutorId = #{tutorid,jdbcType=BIGINT},
+      <if test="achievement != null" >
+        achievement = #{achievement,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.Course" >
-    update course
-    set note = #{note,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      tutorId = #{tutorid,jdbcType=BIGINT}
+  <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
+    update achievement
+    set courseItemId = #{courseitemid,jdbcType=BIGINT},
+      studentId = #{studentid,jdbcType=BIGINT},
+      achievement = #{achievement,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

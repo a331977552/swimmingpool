@@ -20,6 +20,10 @@ public class CommonEntity {
 	public String getMsg() {
 		return msg;
 	}
+	@Override
+	public String toString() {
+		return "CommonEntity [msg=" + msg + ", status=" + status + ", bean=" + bean + "]";
+	}
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}

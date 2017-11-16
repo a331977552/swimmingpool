@@ -23,7 +23,12 @@ public class CourseChoosing {
         this.studentid = studentid;
     }
 
-    public Long getCourseid() {
+    @Override
+	public String toString() {
+		return "CourseChoosing [id=" + id + ", studentid=" + studentid + ", courseid=" + courseid + "]";
+	}
+
+	public Long getCourseid() {
         return courseid;
     }
 

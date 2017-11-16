@@ -1,5 +1,7 @@
 package uk.co.swimmingpool.test;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.junit.runner.RunWith;
@@ -8,9 +10,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import uk.co.jsmondswimmingpool.entity.Achievement;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.Tutor;
 import uk.co.jsmondswimmingpool.entity.custom.PageBean;
+import uk.co.jsmondswimmingpool.entity.custom.SignVo;
 import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.service.IStudentService;
 
@@ -39,6 +43,57 @@ public class StudentTest {
 		
 		
 		@Test
+		public void findById2() {
+			try {
+				List<SignVo> student = studentService.geStudentsSignStatusByTutorId(new Long(1));
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		@Test
+		public void deleteStudent() {
+			// TODO Auto-generated method stub
+				try {
+					studentService.deleteStudent((long)30);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+		
+		@Test
+		public void addStudent() {
+			// TODO Auto-generated method stub
+			try {
+				Student stu=new Student();
+				stu.setName("haha32");
+				studentService.addStudent(stu);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		@Test
+		public void getAchievement() {
+			// TODO Auto-generated method stub
+			try {
+				List<Achievement> achievement = studentService.getAchievement((long)1);
+				
+				System.out.println(achievement.get(0).getAchievement());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		@Test
 		public void getStudentsByTutorId() {
 			try {
 				TutorVo tutorVo=new TutorVo();
@@ -62,6 +117,7 @@ public class StudentTest {
 			}
 			
 		}
+		
 		
 		
 		

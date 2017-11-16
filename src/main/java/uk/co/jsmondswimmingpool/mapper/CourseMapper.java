@@ -28,4 +28,6 @@ public interface CourseMapper {
 
     int updateByPrimaryKey(Course record);
     List<Long> getCourseIdsByTutorId(Long id);
+
+	List<Course> selectCoursesByStudentId(Long id);
 }

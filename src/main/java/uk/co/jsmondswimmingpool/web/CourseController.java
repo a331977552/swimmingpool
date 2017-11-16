@@ -2,6 +2,8 @@ package uk.co.jsmondswimmingpool.web;
 
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,7 @@ import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
+import uk.co.jsmondswimmingpool.entity.custom.CourseVo;
 import uk.co.jsmondswimmingpool.entity.custom.PageBean;
 import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.service.ICourseService;
@@ -25,8 +28,8 @@ public class CourseController {
 	@Autowired
 	ICourseService service;
 	
-	@RequestMapping(value = "/students", method = RequestMethod.GET)
-	public @ResponseBody CommonEntity getAll(@RequestBody(required=false) Course vo) {
+	@RequestMapping(value = "/courses", method = RequestMethod.GET)
+	public @ResponseBody CommonEntity getAll(@RequestBody(required=false) CourseVo vo) {
 		CommonEntity commonEntity = new CommonEntity();
 		try {
 			PageBean<Student> result = service.getAll(vo);
@@ -44,7 +47,7 @@ public class CourseController {
 	}
 	
 	
-	@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity getAllByTutor(@RequestBody(required=true) TutorVo vo) {
 		CommonEntity commonEntity = new CommonEntity();
 		try {
@@ -60,17 +63,19 @@ public class CourseController {
 			commonEntity.setBean(null);
 		}
 		return commonEntity;
-	}
+	}*/
+	
+	
+	
+	
 	
 	@RequestMapping( method = RequestMethod.POST)
-	public @ResponseBody CommonEntity addCourse(@RequestBody Course course) {
+	public @ResponseBody CommonEntity addCourse(@RequestBody CourseVo course) {
 		
 		CommonEntity commonEntity = new CommonEntity();
 		try {
-			Course result = service.addCourse(course);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+			 commonEntity = service.addCourse(course);
+			
 		} catch (Exception e) {
 			String message = e.getMessage();
 			e.printStackTrace();
@@ -87,10 +92,8 @@ public class CourseController {
 		
 		CommonEntity commonEntity = new CommonEntity();
 		try {
-			Course result = service.deleteCourse(course);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+			commonEntity = service.deleteCourse(course);
+			
 		} catch (Exception e) {
 			String message = e.getMessage();
 			e.printStackTrace();
@@ -113,10 +116,8 @@ public class CourseController {
 		
 		CommonEntity commonEntity = new CommonEntity();
 		try {
-			Course result = service.assignTutorBytutorId(course);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+			commonEntity = service.changeCourseTutorBytutorId(course);
+			
 		} catch (Exception e) {
 			String message = e.getMessage();
 			e.printStackTrace();
@@ -187,12 +188,10 @@ public class CourseController {
 	@RequestMapping( method = RequestMethod.PATCH)
 	public @ResponseBody CommonEntity updateCourse(@RequestBody Course choose) {
 		
-		CommonEntity commonEntity = new CommonEntity();
+		CommonEntity commonEntity=null;
 		try {
-			Course 	result = service.deleteCourse(choose);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+			commonEntity = service.updateCourse(choose);
+			
 		} catch (Exception e) { 
 			String message = e.getMessage();
 			e.printStackTrace();
@@ -203,6 +202,27 @@ public class CourseController {
 
 		return commonEntity;
 		
+	}
+	@RequestMapping(value = "/student/{id}", method = RequestMethod.GET)
+	public @ResponseBody CommonEntity getStudentsByTutorId(@PathVariable("id")Long id) {
+		CommonEntity commonEntity = new CommonEntity();
+		
+		try {
+			List<Course> stu = service.getCourseByStudentId(id);
+			
+			commonEntity.setBean(stu);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		
+		} catch (Exception e) {
+			String message = e.getMessage();
+			e.printStackTrace();
+			commonEntity.setMsg("failue :"+ message);
+			commonEntity.setStatus(1);
+			commonEntity.setBean(null);
+		}
+		
+		return commonEntity;
 	}
 	
 	

@@ -17,7 +17,13 @@ public class Tutor {
 
     private Integer power;
 
-    public Long getId() {
+    @Override
+	public String toString() {
+		return "Tutor [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password + ", note="
+				+ note + ", address=" + address + ", phonenumber=" + phonenumber + ", power=" + power + "]";
+	}
+
+	public Long getId() {
         return id;
     }
 
