@@ -98,6 +98,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Courseitem" >
+      <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">  
+      select LAST_INSERT_ID()
+    </selectKey>  
     insert into courseitem (id, Name, courseId
       )
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{courseid,jdbcType=BIGINT}

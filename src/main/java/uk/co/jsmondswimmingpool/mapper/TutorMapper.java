@@ -10,7 +10,7 @@ public interface TutorMapper {
 
     int deleteByExample(TutorExample example);
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(Tutor record);
 
@@ -18,7 +18,7 @@ public interface TutorMapper {
 
     List<Tutor> selectByExample(TutorExample example);
 
-    Tutor selectByPrimaryKey(Long id);
+    Tutor selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") Tutor record, @Param("example") TutorExample example);
 

@@ -1,48 +1,66 @@
 package uk.co.jsmondswimmingpool.entity.custom;
 
+import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.Courseitem;
-import uk.co.jsmondswimmingpool.entity.Coursetimetable;
 
 public class CourseVo {
-
+	
+	private Long studentId;
+	public Long getStudentId() {
+		return studentId;
+	}
+	public void setStudentId(Long studentId) {
+		this.studentId = studentId;
+	}
+	
 	private Course course;
-	private List<Courseitem> courseitem;
-	private List<Coursetimetable> coursetimetable;
-	
-	
-	public List<Courseitem> getCourseitem() {
-		return courseitem;
+	private List<Courseitem> courseitems;
+	public List<Courseitem> getCourseitems() {
+		return courseitems;
 	}
-	public void setCourseitem(List<Courseitem> courseitem) {
-		this.courseitem = courseitem;
+	private Boolean includingChose;
+	public Boolean getIncludingFishished() {
+		return includingFishished;
 	}
-	public List<Coursetimetable> getCoursetimetable() {
-		return coursetimetable;
+	public Boolean isIncludingChose() {
+		return includingChose;
 	}
-	public void setCoursetimetable(List<Coursetimetable> coursetimetable) {
-		this.coursetimetable = coursetimetable;
+	public Boolean getIncludingChose() {
+		return includingChose;
 	}
-	private Integer currentPage;
-	private Integer pageSize;
+	public void setIncludingChose(Boolean includingChose) {
+		this.includingChose = includingChose;
+	}
+
+	private Boolean includingFishished;
+	public Boolean isIncludingFishished() {
+		return includingFishished;
+	}
+	public void setIncludingFishished(Boolean includingFishished) {
+		this.includingFishished = includingFishished;
+	}
+	public void setCourseitems(List<Courseitem> courseitems) {
+		this.courseitems = courseitems;
+	}
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private Date day;
 	public Course getCourse() {
 		return course;
+	}
+	public Date getDay() {
+		return day;
+	}
+	public void setDay(Date day) {
+		this.day = day;
 	}
 	public void setCourse(Course course) {
 		this.course = course;
 	}
-	public Integer getCurrentPage() {
-		return currentPage;
-	}
-	public void setCurrentPage(Integer currentPage) {
-		this.currentPage = currentPage;
-	}
-	public Integer getPageSize() {
-		return pageSize;
-	}
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
+	
+	
 }

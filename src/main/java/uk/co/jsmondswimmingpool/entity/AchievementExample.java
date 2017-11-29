@@ -353,6 +353,126 @@ public class AchievementExample {
             addCriterion("achievement not between", value1, value2, "achievement");
             return (Criteria) this;
         }
+
+        public Criteria andCourseidIsNull() {
+            addCriterion("courseId is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidIsNotNull() {
+            addCriterion("courseId is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidEqualTo(Long value) {
+            addCriterion("courseId =", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidNotEqualTo(Long value) {
+            addCriterion("courseId <>", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidGreaterThan(Long value) {
+            addCriterion("courseId >", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidGreaterThanOrEqualTo(Long value) {
+            addCriterion("courseId >=", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidLessThan(Long value) {
+            addCriterion("courseId <", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidLessThanOrEqualTo(Long value) {
+            addCriterion("courseId <=", value, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidIn(List<Long> values) {
+            addCriterion("courseId in", values, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidNotIn(List<Long> values) {
+            addCriterion("courseId not in", values, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidBetween(Long value1, Long value2) {
+            addCriterion("courseId between", value1, value2, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCourseidNotBetween(Long value1, Long value2) {
+            addCriterion("courseId not between", value1, value2, "courseid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameIsNull() {
+            addCriterion("courseName is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameIsNotNull() {
+            addCriterion("courseName is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameEqualTo(Long value) {
+            addCriterion("courseName =", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameNotEqualTo(Long value) {
+            addCriterion("courseName <>", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameGreaterThan(Long value) {
+            addCriterion("courseName >", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameGreaterThanOrEqualTo(Long value) {
+            addCriterion("courseName >=", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameLessThan(Long value) {
+            addCriterion("courseName <", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameLessThanOrEqualTo(Long value) {
+            addCriterion("courseName <=", value, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameIn(List<Long> values) {
+            addCriterion("courseName in", values, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameNotIn(List<Long> values) {
+            addCriterion("courseName not in", values, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameBetween(Long value1, Long value2) {
+            addCriterion("courseName between", value1, value2, "coursename");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoursenameNotBetween(Long value1, Long value2) {
+            addCriterion("courseName not between", value1, value2, "coursename");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

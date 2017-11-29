@@ -1,6 +1,8 @@
 package uk.co.jsmondswimmingpool.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class CourseExample {
@@ -102,6 +104,32 @@ public class CourseExample {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value1, value2));
+        }
+
+        protected void addCriterionForJDBCDate(String condition, Date value, String property) {
+            if (value == null) {
+                throw new RuntimeException("Value for " + property + " cannot be null");
+            }
+            addCriterion(condition, new java.sql.Date(value.getTime()), property);
+        }
+
+        protected void addCriterionForJDBCDate(String condition, List<Date> values, String property) {
+            if (values == null || values.size() == 0) {
+                throw new RuntimeException("Value list for " + property + " cannot be null or empty");
+            }
+            List<java.sql.Date> dateList = new ArrayList<java.sql.Date>();
+            Iterator<Date> iter = values.iterator();
+            while (iter.hasNext()) {
+                dateList.add(new java.sql.Date(iter.next().getTime()));
+            }
+            addCriterion(condition, dateList, property);
+        }
+
+        protected void addCriterionForJDBCDate(String condition, Date value1, Date value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new RuntimeException("Between values for " + property + " cannot be null");
+            }
+            addCriterion(condition, new java.sql.Date(value1.getTime()), new java.sql.Date(value2.getTime()), property);
         }
 
         public Criteria andIdIsNull() {
@@ -304,63 +332,193 @@ public class CourseExample {
             return (Criteria) this;
         }
 
-        public Criteria andTutoridIsNull() {
-            addCriterion("tutorId is null");
+        public Criteria andStartDateIsNull() {
+            addCriterion("start_date is null");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridIsNotNull() {
-            addCriterion("tutorId is not null");
+        public Criteria andStartDateIsNotNull() {
+            addCriterion("start_date is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridEqualTo(Long value) {
-            addCriterion("tutorId =", value, "tutorid");
+        public Criteria andStartDateEqualTo(Date value) {
+            addCriterionForJDBCDate("start_date =", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridNotEqualTo(Long value) {
-            addCriterion("tutorId <>", value, "tutorid");
+        public Criteria andStartDateNotEqualTo(Date value) {
+            addCriterionForJDBCDate("start_date <>", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridGreaterThan(Long value) {
-            addCriterion("tutorId >", value, "tutorid");
+        public Criteria andStartDateGreaterThan(Date value) {
+            addCriterionForJDBCDate("start_date >", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridGreaterThanOrEqualTo(Long value) {
-            addCriterion("tutorId >=", value, "tutorid");
+        public Criteria andStartDateGreaterThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("start_date >=", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridLessThan(Long value) {
-            addCriterion("tutorId <", value, "tutorid");
+        public Criteria andStartDateLessThan(Date value) {
+            addCriterionForJDBCDate("start_date <", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridLessThanOrEqualTo(Long value) {
-            addCriterion("tutorId <=", value, "tutorid");
+        public Criteria andStartDateLessThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("start_date <=", value, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridIn(List<Long> values) {
-            addCriterion("tutorId in", values, "tutorid");
+        public Criteria andStartDateIn(List<Date> values) {
+            addCriterionForJDBCDate("start_date in", values, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridNotIn(List<Long> values) {
-            addCriterion("tutorId not in", values, "tutorid");
+        public Criteria andStartDateNotIn(List<Date> values) {
+            addCriterionForJDBCDate("start_date not in", values, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridBetween(Long value1, Long value2) {
-            addCriterion("tutorId between", value1, value2, "tutorid");
+        public Criteria andStartDateBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("start_date between", value1, value2, "startDate");
             return (Criteria) this;
         }
 
-        public Criteria andTutoridNotBetween(Long value1, Long value2) {
-            addCriterion("tutorId not between", value1, value2, "tutorid");
+        public Criteria andStartDateNotBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("start_date not between", value1, value2, "startDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateIsNull() {
+            addCriterion("end_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateIsNotNull() {
+            addCriterion("end_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateEqualTo(Date value) {
+            addCriterionForJDBCDate("end_date =", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateNotEqualTo(Date value) {
+            addCriterionForJDBCDate("end_date <>", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateGreaterThan(Date value) {
+            addCriterionForJDBCDate("end_date >", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateGreaterThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("end_date >=", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateLessThan(Date value) {
+            addCriterionForJDBCDate("end_date <", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateLessThanOrEqualTo(Date value) {
+            addCriterionForJDBCDate("end_date <=", value, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateIn(List<Date> values) {
+            addCriterionForJDBCDate("end_date in", values, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateNotIn(List<Date> values) {
+            addCriterionForJDBCDate("end_date not in", values, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("end_date between", value1, value2, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andEndDateNotBetween(Date value1, Date value2) {
+            addCriterionForJDBCDate("end_date not between", value1, value2, "endDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameIsNull() {
+            addCriterion("tutorName is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameIsNotNull() {
+            addCriterion("tutorName is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameEqualTo(String value) {
+            addCriterion("tutorName =", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameNotEqualTo(String value) {
+            addCriterion("tutorName <>", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameGreaterThan(String value) {
+            addCriterion("tutorName >", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameGreaterThanOrEqualTo(String value) {
+            addCriterion("tutorName >=", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameLessThan(String value) {
+            addCriterion("tutorName <", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameLessThanOrEqualTo(String value) {
+            addCriterion("tutorName <=", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameLike(String value) {
+            addCriterion("tutorName like", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameNotLike(String value) {
+            addCriterion("tutorName not like", value, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameIn(List<String> values) {
+            addCriterion("tutorName in", values, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameNotIn(List<String> values) {
+            addCriterion("tutorName not in", values, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameBetween(String value1, String value2) {
+            addCriterion("tutorName between", value1, value2, "tutorname");
+            return (Criteria) this;
+        }
+
+        public Criteria andTutornameNotBetween(String value1, String value2) {
+            addCriterion("tutorName not between", value1, value2, "tutorname");
             return (Criteria) this;
         }
     }

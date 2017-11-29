@@ -6,6 +6,8 @@
     <result column="courseItemId" property="courseitemid" jdbcType="BIGINT" />
     <result column="studentId" property="studentid" jdbcType="BIGINT" />
     <result column="achievement" property="achievement" jdbcType="VARCHAR" />
+    <result column="courseId" property="courseid" jdbcType="BIGINT" />
+    <result column="courseName" property="coursename" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -66,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, courseItemId, studentId, achievement
+    id, courseItemId, studentId, achievement, courseId, courseName
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.AchievementExample" >
     select
@@ -100,9 +102,11 @@
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
     insert into achievement (id, courseItemId, studentId, 
-      achievement)
+      achievement, courseId, courseName
+      )
     values (#{id,jdbcType=BIGINT}, #{courseitemid,jdbcType=BIGINT}, #{studentid,jdbcType=BIGINT}, 
-      #{achievement,jdbcType=VARCHAR})
+      #{achievement,jdbcType=VARCHAR}, #{courseid,jdbcType=BIGINT}, #{coursename,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Achievement" >
     insert into achievement
@@ -119,6 +123,12 @@
       <if test="achievement != null" >
         achievement,
       </if>
+      <if test="courseid != null" >
+        courseId,
+      </if>
+      <if test="coursename != null" >
+        courseName,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -132,6 +142,12 @@
       </if>
       <if test="achievement != null" >
         #{achievement,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null" >
+        #{courseid,jdbcType=BIGINT},
+      </if>
+      <if test="coursename != null" >
+        #{coursename,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -156,6 +172,12 @@
       <if test="record.achievement != null" >
         achievement = #{record.achievement,jdbcType=VARCHAR},
       </if>
+      <if test="record.courseid != null" >
+        courseId = #{record.courseid,jdbcType=BIGINT},
+      </if>
+      <if test="record.coursename != null" >
+        courseName = #{record.coursename,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -166,7 +188,9 @@
     set id = #{record.id,jdbcType=BIGINT},
       courseItemId = #{record.courseitemid,jdbcType=BIGINT},
       studentId = #{record.studentid,jdbcType=BIGINT},
-      achievement = #{record.achievement,jdbcType=VARCHAR}
+      achievement = #{record.achievement,jdbcType=VARCHAR},
+      courseId = #{record.courseid,jdbcType=BIGINT},
+      courseName = #{record.coursename,jdbcType=BIGINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -183,6 +207,12 @@
       <if test="achievement != null" >
         achievement = #{achievement,jdbcType=VARCHAR},
       </if>
+      <if test="courseid != null" >
+        courseId = #{courseid,jdbcType=BIGINT},
+      </if>
+      <if test="coursename != null" >
+        courseName = #{coursename,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -190,7 +220,9 @@
     update achievement
     set courseItemId = #{courseitemid,jdbcType=BIGINT},
       studentId = #{studentid,jdbcType=BIGINT},
-      achievement = #{achievement,jdbcType=VARCHAR}
+      achievement = #{achievement,jdbcType=VARCHAR},
+      courseId = #{courseid,jdbcType=BIGINT},
+      courseName = #{coursename,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

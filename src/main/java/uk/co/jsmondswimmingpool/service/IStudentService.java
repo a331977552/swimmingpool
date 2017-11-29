@@ -1,32 +1,45 @@
 package uk.co.jsmondswimmingpool.service;
 
-import java.util.List;
-
 import uk.co.jsmondswimmingpool.entity.Achievement;
+import uk.co.jsmondswimmingpool.entity.Attendance;
+import uk.co.jsmondswimmingpool.entity.Finishstatus;
 import uk.co.jsmondswimmingpool.entity.Student;
-import uk.co.jsmondswimmingpool.entity.StudentExample;
-import uk.co.jsmondswimmingpool.entity.custom.PageBean;
-import uk.co.jsmondswimmingpool.entity.custom.SignVo;
+import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
 import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
-import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 
 public interface IStudentService {
+/*
+	 * get all student related to today's course;
+	 * get a student's attendance history by course and date and student's id
+	 * add student
+	 * update student
+	 * delete student
+	 * get a student from search
+	*/
+	
+	CommonEntity getAll(StudentVo vo) ;
 
-	PageBean<Student> getAll(StudentVo vo) throws Exception;
+	CommonEntity findById(Long id) ;
 
-	Student findById(Long id) throws Exception;
+	CommonEntity addStudent(Student student) ;
 
-	PageBean<Student> getStudentsByTutorId(TutorVo toturVo) throws Exception;
+	CommonEntity updateStudent(Student student)  ;
 
-	Student addStudent(Student student) throws Exception;
+	CommonEntity deleteStudent(Long id) ;
+	
+	CommonEntity getAttendanceRecord(Attendance id) ;
 
-	Student updateStudent(Student student) throws Exception;
+	CommonEntity finishCourse(Finishstatus finish);
 
-	void deleteStudent(Long id) throws Exception;
-	Long getNumberOfStudent(StudentExample example) throws Exception;
+	CommonEntity getAchievement(Long id);
 
-	List<SignVo> geStudentsSignStatusByTutorId(Long id);
+	CommonEntity getAllByCourseId(Long id);
 
-	List<Achievement> getAchievement(Long id);
+	CommonEntity signIn(Attendance attendance);
+
+	CommonEntity achieve(Achievement achievement);
+	
+	
+
 
 }

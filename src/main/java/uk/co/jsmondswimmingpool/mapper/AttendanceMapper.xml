@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="uk.co.jsmondswimmingpool.mapper.CoursetimetableMapper" >
-  <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.Coursetimetable" >
+<mapper namespace="uk.co.jsmondswimmingpool.mapper.AttendanceMapper" >
+  <resultMap id="BaseResultMap" type="uk.co.jsmondswimmingpool.entity.Attendance" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="courseId" property="courseid" jdbcType="BIGINT" />
-    <result column="courseDate" property="coursedate" jdbcType="VARCHAR" />
+    <result column="studentid" property="studentid" jdbcType="BIGINT" />
+    <result column="record_date" property="recordDate" jdbcType="DATE" />
+    <result column="courseid" property="courseid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -65,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, courseId, courseDate
+    id, studentid, record_date, courseid
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.CoursetimetableExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.AttendanceExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from coursetimetable
+    from attendance
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -84,67 +85,76 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from coursetimetable
+    from attendance
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from coursetimetable
+    delete from attendance
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="uk.co.jsmondswimmingpool.entity.CoursetimetableExample" >
-    delete from coursetimetable
+  <delete id="deleteByExample" parameterType="uk.co.jsmondswimmingpool.entity.AttendanceExample" >
+    delete from attendance
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Coursetimetable" >
-    insert into coursetimetable (id, courseId, courseDate
-      )
-    values (#{id,jdbcType=BIGINT}, #{courseid,jdbcType=BIGINT}, #{coursedate,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Attendance" >
+    insert into attendance (id, studentid, record_date, 
+      courseid)
+    values (#{id,jdbcType=BIGINT}, #{studentid,jdbcType=BIGINT}, #{recordDate,jdbcType=DATE}, 
+      #{courseid,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Coursetimetable" >
-    insert into coursetimetable
+  <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Attendance" >
+    insert into attendance
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="courseid != null" >
-        courseId,
+      <if test="studentid != null" >
+        studentid,
       </if>
-      <if test="coursedate != null" >
-        courseDate,
+      <if test="recordDate != null" >
+        record_date,
+      </if>
+      <if test="courseid != null" >
+        courseid,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
+      <if test="studentid != null" >
+        #{studentid,jdbcType=BIGINT},
+      </if>
+      <if test="recordDate != null" >
+        #{recordDate,jdbcType=DATE},
+      </if>
       <if test="courseid != null" >
         #{courseid,jdbcType=BIGINT},
       </if>
-      <if test="coursedate != null" >
-        #{coursedate,jdbcType=VARCHAR},
-      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="uk.co.jsmondswimmingpool.entity.CoursetimetableExample" resultType="java.lang.Integer" >
-    select count(*) from coursetimetable
+  <select id="countByExample" parameterType="uk.co.jsmondswimmingpool.entity.AttendanceExample" resultType="java.lang.Integer" >
+    select count(*) from attendance
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update coursetimetable
+    update attendance
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.courseid != null" >
-        courseId = #{record.courseid,jdbcType=BIGINT},
+      <if test="record.studentid != null" >
+        studentid = #{record.studentid,jdbcType=BIGINT},
       </if>
-      <if test="record.coursedate != null" >
-        courseDate = #{record.coursedate,jdbcType=VARCHAR},
+      <if test="record.recordDate != null" >
+        record_date = #{record.recordDate,jdbcType=DATE},
+      </if>
+      <if test="record.courseid != null" >
+        courseid = #{record.courseid,jdbcType=BIGINT},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -152,30 +162,35 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update coursetimetable
+    update attendance
     set id = #{record.id,jdbcType=BIGINT},
-      courseId = #{record.courseid,jdbcType=BIGINT},
-      courseDate = #{record.coursedate,jdbcType=VARCHAR}
+      studentid = #{record.studentid,jdbcType=BIGINT},
+      record_date = #{record.recordDate,jdbcType=DATE},
+      courseid = #{record.courseid,jdbcType=BIGINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.Coursetimetable" >
-    update coursetimetable
+  <update id="updateByPrimaryKeySelective" parameterType="uk.co.jsmondswimmingpool.entity.Attendance" >
+    update attendance
     <set >
-      <if test="courseid != null" >
-        courseId = #{courseid,jdbcType=BIGINT},
+      <if test="studentid != null" >
+        studentid = #{studentid,jdbcType=BIGINT},
       </if>
-      <if test="coursedate != null" >
-        courseDate = #{coursedate,jdbcType=VARCHAR},
+      <if test="recordDate != null" >
+        record_date = #{recordDate,jdbcType=DATE},
+      </if>
+      <if test="courseid != null" >
+        courseid = #{courseid,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.Coursetimetable" >
-    update coursetimetable
-    set courseId = #{courseid,jdbcType=BIGINT},
-      courseDate = #{coursedate,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="uk.co.jsmondswimmingpool.entity.Attendance" >
+    update attendance
+    set studentid = #{studentid,jdbcType=BIGINT},
+      record_date = #{recordDate,jdbcType=DATE},
+      courseid = #{courseid,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

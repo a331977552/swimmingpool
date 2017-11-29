@@ -1,9 +1,16 @@
 package uk.co.jsmondswimmingpool.entity;
 
-public class CourseChoosing {
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class Attendance {
     private Long id;
 
     private Long studentid;
+    
+    @JsonFormat(pattern="yyy-MM-dd")
+    private Date recordDate;
 
     private Long courseid;
 
@@ -21,6 +28,14 @@ public class CourseChoosing {
 
     public void setStudentid(Long studentid) {
         this.studentid = studentid;
+    }
+
+    public Date getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(Date recordDate) {
+        this.recordDate = recordDate;
     }
 
     public Long getCourseid() {

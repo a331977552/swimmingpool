@@ -1,19 +1,11 @@
 package uk.co.jsmondswimmingpool.entity;
 
-public class CourseChoosing {
-    private Long id;
-
+public class Finishstatus {
     private Long studentid;
 
     private Long courseid;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer status;
 
     public Long getStudentid() {
         return studentid;
@@ -29,5 +21,18 @@ public class CourseChoosing {
 
     public void setCourseid(Long courseid) {
         this.courseid = courseid;
+    }
+
+    @Override
+	public String toString() {
+		return "Finishstatus [studentid=" + studentid + ", courseid=" + courseid + ", status=" + status + "]";
+	}
+
+	public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

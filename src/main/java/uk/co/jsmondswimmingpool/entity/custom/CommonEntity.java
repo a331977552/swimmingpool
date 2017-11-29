@@ -1,28 +1,18 @@
 package uk.co.jsmondswimmingpool.entity.custom;
 
-
 public class CommonEntity {
-	
-	
-	
+
+	private Object bean;
 	private String msg;
 	private int status;
-	public CommonEntity() {
-		super();
+	public Object getBean() {
+		return bean;
 	}
-	private Object bean;
-	public CommonEntity(String msg, int status, Object bean) {
-		super();
-		this.msg = msg;
-		this.status = status;
+	public void setBean(Object bean) {
 		this.bean = bean;
 	}
 	public String getMsg() {
 		return msg;
-	}
-	@Override
-	public String toString() {
-		return "CommonEntity [msg=" + msg + ", status=" + status + ", bean=" + bean + "]";
 	}
 	public void setMsg(String msg) {
 		this.msg = msg;
@@ -33,12 +23,4 @@ public class CommonEntity {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public Object getBean() {
-		return bean;
-	}
-	public void setBean(Object bean) {
-		this.bean = bean;
-	}
-	
-
 }

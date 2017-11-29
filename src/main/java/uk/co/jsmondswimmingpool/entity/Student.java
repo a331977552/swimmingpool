@@ -1,11 +1,17 @@
 package uk.co.jsmondswimmingpool.entity;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Student {
     private Long id;
 
     private String name;
 
     private String level;
+
+    private String startdate;
 
     private Integer max;
 
@@ -28,8 +34,9 @@ public class Student {
     private Integer paid;
 
     private String note;
-
-    private String enrolmentdate;
+    
+    @JsonFormat(pattern="yyy-MM-dd")
+    private Date createdate;
 
     public Long getId() {
         return id;
@@ -53,6 +60,14 @@ public class Student {
 
     public void setLevel(String level) {
         this.level = level == null ? null : level.trim();
+    }
+
+    public String getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(String startdate) {
+        this.startdate = startdate == null ? null : startdate.trim();
     }
 
     public Integer getMax() {
@@ -143,16 +158,11 @@ public class Student {
         this.note = note == null ? null : note.trim();
     }
 
-    public String getEnrolmentdate() {
-        return enrolmentdate;
+    public Date getCreatedate() {
+        return createdate;
     }
 
-    public void setEnrolmentdate(String enrolmentdate) {
-        this.enrolmentdate = enrolmentdate == null ? null : enrolmentdate.trim();
-    }
-    
-    @Override
-    public int hashCode() {
-    	return id.intValue();
+    public void setCreatedate(Date createdate) {
+        this.createdate = createdate;
     }
 }

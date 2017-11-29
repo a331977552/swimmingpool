@@ -5,6 +5,7 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="level" property="level" jdbcType="VARCHAR" />
+    <result column="startDate" property="startdate" jdbcType="VARCHAR" />
     <result column="Max" property="max" jdbcType="INTEGER" />
     <result column="min" property="min" jdbcType="INTEGER" />
     <result column="current" property="current" jdbcType="INTEGER" />
@@ -16,7 +17,7 @@
     <result column="MedicalCondition" property="medicalcondition" jdbcType="VARCHAR" />
     <result column="Paid" property="paid" jdbcType="INTEGER" />
     <result column="Note" property="note" jdbcType="VARCHAR" />
-    <result column="enrolmentDate" property="enrolmentdate" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="DATE" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -77,8 +78,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, level, Max, min, current, weeks, address, phoneNumber, parentPhoneNumber, 
-    parentName, MedicalCondition, Paid, Note, enrolmentDate
+    id, name, level, startDate, Max, min, current, weeks, address, phoneNumber, parentPhoneNumber, 
+    parentName, MedicalCondition, Paid, Note, createDate
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="uk.co.jsmondswimmingpool.entity.StudentExample" >
     select
@@ -94,57 +95,12 @@
       order by ${orderByClause}
     </if>
   </select>
-  
-  
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from student
     where id = #{id,jdbcType=BIGINT}
   </select>
-  
-  
-  
-  <select id="selectByCourseId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from student
-    where id in (select studentId from course_choosing where courseId=#{id})
-  </select>
-  
-  <resultMap type="uk.co.jsmondswimmingpool.entity.CourseChoosing" id="ChooseMap" >
-  	<id column="id" property="id" jdbcType="BIGINT"/>
-  	<result column="courseid" property="courseid" jdbcType="BIGINT"/>
-  	<result column="studentid" property="studentid" jdbcType="BIGINT"/>
-  </resultMap>
-  <select id="selectStuIdAndCourseIdByTodayAndTutorId" resultMap="ChooseMap" parameterType="uk.co.jsmondswimmingpool.entity.custom.SignVo" >
- select  
- studentId,course_choosing.CourseId 
- from course_choosing where course_choosing.CourseId in 
-  (select courseId from coursetimetable  where coursetimetable.courseId in (select id from course where tutorid=#{tutorId})
- and				
-  coursetimetable.courseDate like #{courseDate}"%")
-  </select>
-   <resultMap id="tableId" type="Long" >
-    <id column="id"   jdbcType="BIGINT" />
-  </resultMap>
-  <select id="selectTimeTableByTutorIdAndCourseDate" resultMap="tableId" parameterType="uk.co.jsmondswimmingpool.entity.custom.SignVo" >
-
-	select id from coursetimetable  
-		where 
-	coursetimetable.courseId in (select id from course where tutorid=#{tutorId}) 
-		and 
-	coursetimetable.courseDate like #{courseDate}"%"
-  </select>
-  
-  
-  
-  
-  
-  
-  
-  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from student
     where id = #{id,jdbcType=BIGINT}
@@ -157,17 +113,17 @@
   </delete>
   <insert id="insert" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
     insert into student (id, name, level, 
-      Max, min, current, 
-      weeks, address, phoneNumber, 
-      parentPhoneNumber, parentName, MedicalCondition, 
-      Paid, Note, enrolmentDate
-      )
+      startDate, Max, min, 
+      current, weeks, address, 
+      phoneNumber, parentPhoneNumber, parentName, 
+      MedicalCondition, Paid, Note, 
+      createDate)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
-      #{max,jdbcType=INTEGER}, #{min,jdbcType=INTEGER}, #{current,jdbcType=INTEGER}, 
-      #{weeks,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{phonenumber,jdbcType=VARCHAR}, 
-      #{parentphonenumber,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, #{medicalcondition,jdbcType=VARCHAR}, 
-      #{paid,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, #{enrolmentdate,jdbcType=VARCHAR}
-      )
+      #{startdate,jdbcType=VARCHAR}, #{max,jdbcType=INTEGER}, #{min,jdbcType=INTEGER}, 
+      #{current,jdbcType=INTEGER}, #{weeks,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{phonenumber,jdbcType=VARCHAR}, #{parentphonenumber,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, 
+      #{medicalcondition,jdbcType=VARCHAR}, #{paid,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, 
+      #{createdate,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="uk.co.jsmondswimmingpool.entity.Student" >
     insert into student
@@ -180,6 +136,9 @@
       </if>
       <if test="level != null" >
         level,
+      </if>
+      <if test="startdate != null" >
+        startDate,
       </if>
       <if test="max != null" >
         Max,
@@ -214,8 +173,8 @@
       <if test="note != null" >
         Note,
       </if>
-      <if test="enrolmentdate != null" >
-        enrolmentDate,
+      <if test="createdate != null" >
+        createDate,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -227,6 +186,9 @@
       </if>
       <if test="level != null" >
         #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=VARCHAR},
       </if>
       <if test="max != null" >
         #{max,jdbcType=INTEGER},
@@ -261,8 +223,8 @@
       <if test="note != null" >
         #{note,jdbcType=VARCHAR},
       </if>
-      <if test="enrolmentdate != null" >
-        #{enrolmentdate,jdbcType=VARCHAR},
+      <if test="createdate != null" >
+        #{createdate,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -283,6 +245,9 @@
       </if>
       <if test="record.level != null" >
         level = #{record.level,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startdate != null" >
+        startDate = #{record.startdate,jdbcType=VARCHAR},
       </if>
       <if test="record.max != null" >
         Max = #{record.max,jdbcType=INTEGER},
@@ -317,8 +282,8 @@
       <if test="record.note != null" >
         Note = #{record.note,jdbcType=VARCHAR},
       </if>
-      <if test="record.enrolmentdate != null" >
-        enrolmentDate = #{record.enrolmentdate,jdbcType=VARCHAR},
+      <if test="record.createdate != null" >
+        createDate = #{record.createdate,jdbcType=DATE},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -330,6 +295,7 @@
     set id = #{record.id,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       level = #{record.level,jdbcType=VARCHAR},
+      startDate = #{record.startdate,jdbcType=VARCHAR},
       Max = #{record.max,jdbcType=INTEGER},
       min = #{record.min,jdbcType=INTEGER},
       current = #{record.current,jdbcType=INTEGER},
@@ -341,7 +307,7 @@
       MedicalCondition = #{record.medicalcondition,jdbcType=VARCHAR},
       Paid = #{record.paid,jdbcType=INTEGER},
       Note = #{record.note,jdbcType=VARCHAR},
-      enrolmentDate = #{record.enrolmentdate,jdbcType=VARCHAR}
+      createDate = #{record.createdate,jdbcType=DATE}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -354,6 +320,9 @@
       </if>
       <if test="level != null" >
         level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=VARCHAR},
       </if>
       <if test="max != null" >
         Max = #{max,jdbcType=INTEGER},
@@ -388,8 +357,8 @@
       <if test="note != null" >
         Note = #{note,jdbcType=VARCHAR},
       </if>
-      <if test="enrolmentdate != null" >
-        enrolmentDate = #{enrolmentdate,jdbcType=VARCHAR},
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=DATE},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -398,6 +367,7 @@
     update student
     set name = #{name,jdbcType=VARCHAR},
       level = #{level,jdbcType=VARCHAR},
+      startDate = #{startdate,jdbcType=VARCHAR},
       Max = #{max,jdbcType=INTEGER},
       min = #{min,jdbcType=INTEGER},
       current = #{current,jdbcType=INTEGER},
@@ -409,7 +379,7 @@
       MedicalCondition = #{medicalcondition,jdbcType=VARCHAR},
       Paid = #{paid,jdbcType=INTEGER},
       Note = #{note,jdbcType=VARCHAR},
-      enrolmentDate = #{enrolmentdate,jdbcType=VARCHAR}
+      createDate = #{createdate,jdbcType=DATE}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

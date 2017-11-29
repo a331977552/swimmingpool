@@ -1,5 +1,9 @@
 package uk.co.jsmondswimmingpool.utils;
 
+import java.util.List;
+
+import uk.co.jsmondswimmingpool.entity.Achievement;
+
 public class TextUtils {
 
 	
@@ -23,11 +27,20 @@ public class TextUtils {
 	
 	
 	
-	public static boolean isNullId(Long tr) {
+	public static boolean isNullId(Long ...tr) {
+		for (Long long1 : tr) {
+			if(long1 == null || long1<=0)
+				return true;		
+		}
 		
-		if(tr == null || tr<=0)
+		
+		return false;
+	}
+
+
+	public static boolean isListEmpty(List<Achievement> selectByExample) {
+		if(selectByExample==null || selectByExample.isEmpty())
 			return true;
-		
 		return false;
 	}
 	

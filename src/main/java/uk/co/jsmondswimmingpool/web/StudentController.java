@@ -1,7 +1,5 @@
 package uk.co.jsmondswimmingpool.web;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,12 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.co.jsmondswimmingpool.entity.Achievement;
+import uk.co.jsmondswimmingpool.entity.Attendance;
+import uk.co.jsmondswimmingpool.entity.Finishstatus;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
-import uk.co.jsmondswimmingpool.entity.custom.PageBean;
-import uk.co.jsmondswimmingpool.entity.custom.SignVo;
 import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
-import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.service.IStudentService;
 
 @Controller
@@ -28,174 +25,105 @@ public class StudentController {
 
 	@RequestMapping(value = "/students", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity getAllStudents(@RequestBody(required=false) StudentVo vo) {
+			
+		CommonEntity result = service.getAll(vo);
+		
+		return result;
+	}
+	@RequestMapping(value = "/students/{id}", method = RequestMethod.GET)
+	public @ResponseBody CommonEntity getAllStudentsByCourseId(@PathVariable("id") Long id) {
+		
+		CommonEntity result = service.getAllByCourseId(id);
+		
+		return result;
+	}
 
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			PageBean<Student> result = service.getAll(vo);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-
-		return commonEntity;
+	
+	
+	@RequestMapping(value = "/attendance", method = RequestMethod.POST)
+	public @ResponseBody CommonEntity getAttendanceRecord(@RequestBody(required=true) Attendance vo) {
+		CommonEntity result = service.getAttendanceRecord(vo);
+		
+		return result;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public @ResponseBody CommonEntity getStudentById(@PathVariable(name="id") Long id) {
-		CommonEntity commonEntity = new CommonEntity();
 			
-		try {
-			Student stu = service.findById(id);
-			commonEntity.setBean(stu);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);
 			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
+			CommonEntity stu = service.findById(id);
 
-		return commonEntity;
+		return stu;
 	}
 
-	@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
-	public @ResponseBody CommonEntity getStudentsByTutorId(@RequestBody TutorVo toturVo) {
-		CommonEntity commonEntity = new CommonEntity();
-		
-		try {
-			PageBean<Student> stu = service.getStudentsByTutorId(toturVo);
-			
-			commonEntity.setBean(stu);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		
-		return commonEntity;
-	}
 
 
 
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody CommonEntity addStudent(@RequestBody Student student) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
 			
-			Student result = service.addStudent(student);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+			CommonEntity result = service.addStudent(student);
 		
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("add failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		return commonEntity;
+		return result;
 	}
 
 	@RequestMapping(method = RequestMethod.PATCH)
 	public @ResponseBody CommonEntity updateStudent(@RequestBody Student student) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			
-			Student result = service.updateStudent(student);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+	
+			CommonEntity result = service.updateStudent(student);
 		
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("update failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
+		return result;
+	}
+
+	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
+	public @ResponseBody CommonEntity deleteStudent(@PathVariable(name="id") Long id) {
+	
+			CommonEntity commonEntity = service.deleteStudent(id);
+		
 		return commonEntity;
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE)
-	public @ResponseBody CommonEntity deleteStudent(@PathVariable(name="id") Long id) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			
-			service.deleteStudent(id);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("delete failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		return commonEntity;
-	}
-	//TODO 
 	@RequestMapping(value="/achievement/{id}",method = RequestMethod.GET)
 	public @ResponseBody CommonEntity getAchievement(@PathVariable(name="id") Long id) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-		
-			List<Achievement> achievement = service.getAchievement(id);
-			commonEntity.setBean(achievement);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
+	
 			
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failed to get achievements: "+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		return commonEntity;
+			
+		
+		return service.getAchievement(id);
 	}
 	
 	
 
+
 	
-	@RequestMapping(value="/signin/{id}",method = RequestMethod.GET)
-	public @ResponseBody CommonEntity signIn(@PathVariable(name="id") Long id) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			
-			List<SignVo>  signVo= service.geStudentsSignStatusByTutorId(id);
-			commonEntity.setBean(signVo);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-			
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("delete failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
+	
+	//TODO finish a course
+	
+
+	@RequestMapping(value="/finishcourse",method = RequestMethod.POST)
+	public @ResponseBody CommonEntity finishCourse(@RequestBody Finishstatus finish) {
+	
+			CommonEntity commonEntity = service.finishCourse(finish);
+		
 		return commonEntity;
 	}
 	
 	
+	@RequestMapping(value="/signin",method = RequestMethod.POST)
+	public @ResponseBody CommonEntity signIn(@RequestBody Attendance attendance) {
+		
+		CommonEntity commonEntity = service.signIn(attendance);
+		
+		return commonEntity;
+	}
 	
-	
+	@RequestMapping(value="/achievemnt",method = RequestMethod.POST)
+	public @ResponseBody CommonEntity signIn(@RequestBody Achievement achievement) {
+		
+		CommonEntity commonEntity = service.achieve(achievement);
+		
+		return commonEntity;
+	}
 	
 }

@@ -27,6 +27,4 @@ public interface CourseChoosingMapper {
     int updateByPrimaryKeySelective(CourseChoosing record);
 
     int updateByPrimaryKey(CourseChoosing record);
-
-    
 }

@@ -14,38 +14,52 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
-import uk.co.jsmondswimmingpool.entity.Student;
+import uk.co.jsmondswimmingpool.entity.Courseitem;
 import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
+import uk.co.jsmondswimmingpool.entity.custom.CourseChangeVo;
+import uk.co.jsmondswimmingpool.entity.custom.CourseItemVo;
 import uk.co.jsmondswimmingpool.entity.custom.CourseVo;
-import uk.co.jsmondswimmingpool.entity.custom.PageBean;
-import uk.co.jsmondswimmingpool.entity.custom.TutorVo;
 import uk.co.jsmondswimmingpool.service.ICourseService;
 
 @Controller
 @RequestMapping(value = "/api/course")
 public class CourseController {
 
+	/**
+	 * get all student related to today's course;
+	 * get a student's attendance history 
+	 * add student
+	 * update student
+	 * delete student
+	 * get a student from search
+	 * 
+	 * add course
+	 * update course
+	 * delete course
+	 * get a all the course  ,and click it, go to new activity. show this course achievement and edit it.
+	 * get a course by search
+	 * get all the courses by student
+	 * get all the achievements by student.
+	 * 
+	 * 
+	 * 
+	 * confirm a student has finished a certain course;
+	 * change course
+	 *  
+	 * 
+	 * 
+	 * 
+	 */
+	
 	@Autowired
 	ICourseService service;
 	
-	@RequestMapping(value = "/courses", method = RequestMethod.GET)
+	@RequestMapping(value = "/courses", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity getAll(@RequestBody(required=false) CourseVo vo) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			PageBean<Student> result = service.getAll(vo);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		return commonEntity;
+		CommonEntity result = service.getAll(vo);	
+		return result;
 	}
-	
+
 	
 	/*@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity getAllByTutor(@RequestBody(required=true) TutorVo vo) {
@@ -71,64 +85,20 @@ public class CourseController {
 	
 	@RequestMapping( method = RequestMethod.POST)
 	public @ResponseBody CommonEntity addCourse(@RequestBody CourseVo course) {
-		
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			 commonEntity = service.addCourse(course);
-			
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
 
-		return commonEntity;
+		return service.addCourse(course);
 		
 	}
-	@RequestMapping( method = RequestMethod.DELETE)
-	public @ResponseBody CommonEntity deleteCourse(@RequestBody Course course) {
+	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody CommonEntity deleteCourse(@PathVariable("id") Long id) {
 		
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			commonEntity = service.deleteCourse(course);
-			
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
+		CommonEntity commonEntity = service.deleteCourse(id);
 
 		return commonEntity;
 		
 	}
 	
-	/**
-	 * 
-	 * @param id tutor's ID
-	 * @return
-	 */
-	@RequestMapping(value = "/tutor", method = RequestMethod.POST)
-	public @ResponseBody CommonEntity assignTutorBytutorId(@RequestBody Course course) {
 		
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			commonEntity = service.changeCourseTutorBytutorId(course);
-			
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-
-		return commonEntity;
-		
-	}
 
 	/**
 	 * 
@@ -138,48 +108,29 @@ public class CourseController {
 	@RequestMapping(value = "/choose", method = RequestMethod.POST)
 	public @ResponseBody CommonEntity chooseCourse(@RequestBody CourseChoosing choose) {
 		
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			CourseChoosing result = service.chooseCourse(choose);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) { 
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
 
-		return commonEntity;
+	
+		return service.chooseCourse(choose);
 		
 	}
+	
+			
+	
 	/**
 	 * 
 	 * @param id tutor's ID
 	 * @return
 	 */
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public @ResponseBody CommonEntity changeCourse(@RequestBody CourseChoosing choose) {
+	public @ResponseBody CommonEntity changeCourse(@RequestBody CourseChangeVo choose) {
+			System.out.println(choose.toString());
+			CommonEntity result = service.changeCourse(choose);
 		
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			CourseChoosing result = service.changeCourse(choose);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) { 
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-
-		return commonEntity;
+		return result;
 		
 	}
+	
+
 	/**
 	 * 
 	 * @param id tutor's ID
@@ -203,28 +154,97 @@ public class CourseController {
 		return commonEntity;
 		
 	}
-	@RequestMapping(value = "/student/{id}", method = RequestMethod.GET)
-	public @ResponseBody CommonEntity getStudentsByTutorId(@PathVariable("id")Long id) {
-		CommonEntity commonEntity = new CommonEntity();
+	//get a all the course  ,and click it, go to new activity. show this course achievement and edit it.
 		
-		try {
-			List<Course> stu = service.getCourseByStudentId(id);
+		
+		
+		/**
+		 * 
+		 * @param id tutor's ID
+		 * @return
+		 */
+		@RequestMapping(value="/{id}", method = RequestMethod.GET)
+		public @ResponseBody CommonEntity getCourseById(@PathVariable("id") Long id) {
 			
-			commonEntity.setBean(stu);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
+			CommonEntity commonEntity=null;
+			
+				commonEntity = service.getCourseById(id);
+			return commonEntity;
+			
+		}
+	
+		/**
+		 * 
+		 * @param id tutor's ID
+		 * @return
+		 */
+		@RequestMapping(value="/student/{id}", method = RequestMethod.GET)
+		public @ResponseBody CommonEntity getCourseByStudentId(@PathVariable("id") Long id) {
+			
+			CommonEntity commonEntity=null;
+			
+			commonEntity = service.getCourseByStudentId(id);
+			return commonEntity;
+			
 		}
 		
-		return commonEntity;
-	}
+		/**
+		 * 
+		 * @param id tutor's ID
+		 * @return
+		 */
+		@RequestMapping(value="/items/{id}", method = RequestMethod.GET)
+		public @ResponseBody CommonEntity getAllItemByCourseId(@PathVariable("id") Long id) {
+			
+			CommonEntity commonEntity=null;
+			
+			commonEntity = service.getAllItemByCourseId(id);
+			return commonEntity;
+			
+		}
+		/**
+		 * 
+		 * @param id tutor's ID
+		 * @return
+		 */
+		@RequestMapping(value="/item", method = RequestMethod.PATCH)
+		public @ResponseBody CommonEntity updateItem(@RequestBody Courseitem item) {
+			
+			CommonEntity commonEntity=null;
+			
+			commonEntity = service.updateItem(item);
+			return commonEntity;
+			
+		}
+		/**
+		 * 
+		 * @param id tutor's ID
+		 * @return
+		 */
+		@RequestMapping(value="/item/{id}", method = RequestMethod.DELETE)
+		public @ResponseBody CommonEntity deleteItem(@PathVariable("id")Long id) {
+			
+			CommonEntity commonEntity=null;
+			
+			commonEntity = service.deleteItem(id);
+			return commonEntity;
+			
+		}
+		/**
+		 * 
+
+		 * @return
+		 */
+		@RequestMapping(value="/items", method = RequestMethod.POST)
+		public @ResponseBody CommonEntity addItems(@RequestBody CourseItemVo item) {			
+			CommonEntity commonEntity=null;
+			commonEntity = service.addItems(item);
+			return commonEntity;
+			
+		}
 	
+	
+
 	
 	
 	

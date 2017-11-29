@@ -1,13 +1,23 @@
 package uk.co.jsmondswimmingpool.entity;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Course {
     private Long id;
 
     private String note;
 
     private String name;
+    
+    @JsonFormat(pattern="yyy-MM-dd")
+    private Date startDate;
+    
+    @JsonFormat(pattern="yyy-MM-dd")
+    private Date endDate;
 
-    private Long tutorid;
+    private String tutorname;
 
     public Long getId() {
         return id;
@@ -33,11 +43,27 @@ public class Course {
         this.name = name == null ? null : name.trim();
     }
 
-    public Long getTutorid() {
-        return tutorid;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setTutorid(Long tutorid) {
-        this.tutorid = tutorid;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTutorname() {
+        return tutorname;
+    }
+
+    public void setTutorname(String tutorname) {
+        this.tutorname = tutorname == null ? null : tutorname.trim();
     }
 }

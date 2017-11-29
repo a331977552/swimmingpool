@@ -1,5 +1,6 @@
 package uk.co.jsmondswimmingpool.service.imp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,242 +10,410 @@ import org.springframework.stereotype.Service;
 import uk.co.jsmondswimmingpool.entity.Course;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.CourseChoosingExample;
-import uk.co.jsmondswimmingpool.entity.CourseChoosingExample.Criteria;
+import uk.co.jsmondswimmingpool.entity.CourseExample;
+import uk.co.jsmondswimmingpool.entity.CourseExample.Criteria;
 import uk.co.jsmondswimmingpool.entity.Courseitem;
-import uk.co.jsmondswimmingpool.entity.Coursetimetable;
-import uk.co.jsmondswimmingpool.entity.Student;
-import uk.co.jsmondswimmingpool.entity.StudentExample;
+import uk.co.jsmondswimmingpool.entity.CourseitemExample;
+import uk.co.jsmondswimmingpool.entity.Finishstatus;
+import uk.co.jsmondswimmingpool.entity.FinishstatusExample;
 import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
+import uk.co.jsmondswimmingpool.entity.custom.CourseChangeVo;
+import uk.co.jsmondswimmingpool.entity.custom.CourseItemVo;
 import uk.co.jsmondswimmingpool.entity.custom.CourseVo;
-import uk.co.jsmondswimmingpool.entity.custom.PageBean;
-import uk.co.jsmondswimmingpool.exception.NullIdException;
+import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
+import uk.co.jsmondswimmingpool.mapper.AchievementMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseChoosingMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseitemMapper;
-import uk.co.jsmondswimmingpool.mapper.CoursetimetableMapper;
+import uk.co.jsmondswimmingpool.mapper.FinishstatusMapper;
 import uk.co.jsmondswimmingpool.mapper.StudentMapper;
 import uk.co.jsmondswimmingpool.service.ICourseService;
 import uk.co.jsmondswimmingpool.utils.TextUtils;
 
 @Service
 public class CourseService implements ICourseService {
-	
+
 	@Autowired
 	CourseMapper mapper;
 	@Autowired
 	StudentMapper studentMapper;
-	
+
 	@Autowired
 	CourseChoosingMapper courseChoosingMapper;
-	
+
 	@Autowired
 	CourseitemMapper itemMapper;
-	
 	@Autowired
-	CoursetimetableMapper tableMapper;
-	
+	AchievementMapper achievementMapper;
+	@Autowired
+	FinishstatusMapper finishMapper;
+
 	@Override
-	public PageBean<Student> getAll(CourseVo vo)  throws Exception{
-		if(vo==null || vo.getCourse()==null|| vo.getCourse().getId()==null)
-			throw new NullIdException("course's Id cannot be null");
-		
-		CourseChoosingExample example=new CourseChoosingExample();
-		Criteria createCriteria = example.createCriteria();
-		createCriteria.andCourseidEqualTo(vo.getCourse().getId());
-		List<CourseChoosing> courseChoosingList = courseChoosingMapper.selectByExample(example);
-		int numberOfStudent=courseChoosingList.size();
-		
-		
-		PageBean<Student> bean=new PageBean<>(vo.getCurrentPage(),numberOfStudent,vo.getPageSize());
-		Integer startCount = bean.getStartCount();
-		
-		
-		StudentExample stuExample=new StudentExample();
-		uk.co.jsmondswimmingpool.entity.StudentExample.Criteria stuCariteria = stuExample.createCriteria();
-		List<Long> ids=new ArrayList<>();
-		for (CourseChoosing long1 : courseChoosingList) {
-			ids.add(long1.getStudentid());
+	public CommonEntity getAll(CourseVo vo) {
+		CommonEntity commonEntity = new CommonEntity();
+		CourseExample example = new CourseExample();
+		example.setOrderByClause("id desc");
+		Criteria criteria = example.createCriteria();
+		if (vo != null && vo.getCourse() != null && !TextUtils.isEmpty(vo.getCourse().getName())) {
+
+			criteria.andNameLike("%" + vo.getCourse().getName() + "%");
+
 		}
-		stuCariteria.andIdIn(ids);
-		stuExample.setOrderByClause("id desc limit "+startCount+","+bean.getPageSize());
-		
-		List<Student> studentList = studentMapper.selectByExample(stuExample);
-		bean.setBeans(studentList);
-		
-		
-		return bean;
+
+		if (vo != null && vo.getDay() != null) {
+			/*
+			 * SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 * String format = simpleDateFormat.format(vo.getDay());
+			 */
+			criteria.andEndDateGreaterThanOrEqualTo(vo.getDay());
+
+			criteria.andStartDateLessThanOrEqualTo(vo.getDay());
+		}
+
+		List<Course> removingCourse = mapper.selectByExample(example);
+		try {
+			List<Course> selectByExample = mapper.selectByExample(example);
+			if (vo != null && vo.isIncludingFishished() != null && !vo.isIncludingFishished()) {
+
+				List<Long> values = new ArrayList<>();
+				for (Course course : selectByExample) {
+					values.add(course.getId());
+				}
+
+				FinishstatusExample example2 = new FinishstatusExample();
+				uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c2 = example2.createCriteria();
+				c2.andCourseidIn(values);
+				c2.andStudentidEqualTo(vo.getStudentId());
+				List<Finishstatus> selectByExample2 = finishMapper.selectByExample(example2);
+				for (Finishstatus finishstatus : selectByExample2) {
+					inner: for (Course course : selectByExample) {
+						if (finishstatus.getCourseid().longValue() == course.getId().longValue()) {
+							removingCourse.add(course);
+							break inner;
+						}
+					}
+				}
+
+			}
+
+			// remove the course this student already chose
+			if (vo != null && vo.getIncludingChose() != null && !vo.getIncludingChose() && vo.getStudentId() != null) {
+				CourseChoosingExample example3 = new CourseChoosingExample();
+				uk.co.jsmondswimmingpool.entity.CourseChoosingExample.Criteria c3 = example3.createCriteria();
+				c3.andStudentidEqualTo(vo.getStudentId());
+				List<CourseChoosing> chosen = courseChoosingMapper.selectByExample(example3);
+				for (CourseChoosing c : chosen) {
+					inner: for (Course course : selectByExample) {
+						if (course.getId().longValue() == c.getCourseid().longValue()
+								&& !removingCourse.contains(course)) {
+							removingCourse.add(course);
+							break inner;
+						}
+					}
+				}
+			}
+			selectByExample.removeAll(removingCourse);
+			commonEntity.setBean(selectByExample);
+			
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception e) {
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(11);
+			e.printStackTrace();
+		}
+
+		return commonEntity;
 	}
-
-	
-
-
-	
 
 	/**
 	 * choose Course
 	 */
 	@Override
-	public CourseChoosing chooseCourse(CourseChoosing choose) throws Exception {
-		courseChoosingMapper.insert(choose);
-		return choose;
+	public CommonEntity chooseCourse(CourseChoosing choose) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+			courseChoosingMapper.insert(choose);
+
+			// delete finishing status
+			FinishstatusExample example2 = new FinishstatusExample();
+			uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c2 = example2.createCriteria();
+			c2.andCourseidEqualTo(choose.getCourseid());
+			c2.andStudentidEqualTo(choose.getStudentid());
+			finishMapper.deleteByExample(example2);
+
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failed to choose this course");
+			commonEntity.setStatus(12);
+
+		}
+		return commonEntity;
 	}
 
-	
 	/**
-	 * students  change course
+	 * students change course
 	 */
 	@Override
-	public CourseChoosing changeCourse(CourseChoosing choose)  throws Exception{
-		if(TextUtils.isNullId(choose.getId()) || TextUtils.isNullId(choose.getStudentid()) || TextUtils.isNullId(choose.getCourseid()) )
-			throw new NullIdException("changeCourse: id cannot be null");
-		
-		courseChoosingMapper.updateByPrimaryKey(choose);
-		return choose;
+	public CommonEntity changeCourse(CourseChangeVo choose) {
+		CommonEntity commonEntity = new CommonEntity();
+		if (TextUtils.isNullId(choose.getStudentId()) || TextUtils.isNullId(choose.getCourseId())
+				|| TextUtils.isNullId(choose.getPreviousCourseId())) {
+			commonEntity.setStatus(13);
+			commonEntity.setMsg("please choose one course");
+		} else {
+
+			try {
+				CourseChoosingExample example = new CourseChoosingExample();
+				uk.co.jsmondswimmingpool.entity.CourseChoosingExample.Criteria c = example.createCriteria();
+				c.andCourseidEqualTo(choose.getPreviousCourseId());
+				c.andStudentidEqualTo(choose.getStudentId());
+
+				List<CourseChoosing> selectByExample = courseChoosingMapper.selectByExample(example);
+				if (selectByExample == null || selectByExample.isEmpty()) {
+					commonEntity.setMsg("this student did choose course before");
+					commonEntity.setStatus(22);
+					return commonEntity;
+				}
+				CourseChoosing courseChoosing = selectByExample.get(0);
+				courseChoosing.setCourseid(choose.getCourseId());
+				courseChoosingMapper.updateByPrimaryKey(courseChoosing);
+
+				// delete finishing status
+				FinishstatusExample example2 = new FinishstatusExample();
+				uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c2 = example2.createCriteria();
+				c2.andCourseidEqualTo(courseChoosing.getCourseid());
+				c2.andStudentidEqualTo(courseChoosing.getStudentid());
+				finishMapper.deleteByExample(example2);
+
+				commonEntity.setBean(courseChoosing);
+				commonEntity.setStatus(0);
+				commonEntity.setMsg("success");
+			} catch (Exception e) {
+				commonEntity.setMsg("failed to change  course");
+				commonEntity.setStatus(14);
+				e.printStackTrace();
+			}
+
+		}
+
+		return commonEntity;
 	}
 
-	
-
 	@Override
-	public CommonEntity addCourse(CourseVo course) throws Exception {
-		
-		
-		CommonEntity commonEntity=new CommonEntity();
-		if(TextUtils.isEmpty(course.getCourse().getName()))
-		{
+	public CommonEntity addCourse(CourseVo course) {
+
+		CommonEntity commonEntity = new CommonEntity();
+		if (TextUtils.isEmpty(course.getCourse().getName())) {
 			commonEntity.setMsg("course's name cannot be empty");
-			commonEntity.setStatus(1);
+			commonEntity.setStatus(15);
 			return commonEntity;
 		}
-		
-		if(TextUtils.isNullId(course.getCourse().getTutorid()))
-		{
-			commonEntity.setMsg("must assign a teacher");
-			commonEntity.setStatus(1);
-			return commonEntity;
-		}
-		
-		
-		
-		mapper.insert(course.getCourse());
-		
-		List<Courseitem> courseitems= course.getCourseitem();
-		
-		for (Courseitem courseitem : courseitems) {
-			courseitem.setCourseid(course.getCourse().getId());
-			itemMapper.insert(courseitem);			
-		}
-		
-		List<Coursetimetable> tables= course.getCoursetimetable();
-		
-		for (Coursetimetable tab : tables) {
-			tab.setCourseid(course.getCourse().getId());			
-			tableMapper.insert(tab);			
-		}
-		
-		commonEntity.setBean(course);
-		commonEntity.setMsg("success");
-		commonEntity.setStatus(0);
-		return commonEntity;
-	}
 
-
-	@Override
-	public CommonEntity deleteCourse(Course course) throws Exception {
-		CommonEntity commonEntity=new CommonEntity();
-		if(TextUtils.isNullId(course.getId()))
-		{
-			commonEntity.setMsg("must select a course to delete");
-			commonEntity.setStatus(1);
-			return commonEntity;
-		}
-		
-		
-		mapper.deleteByPrimaryKey(course.getId());
-		commonEntity.setBean(null);
-		commonEntity.setMsg("success");
-		commonEntity.setStatus(0);
-		return commonEntity;
-	}
-
-
-	/**
-	 * change course's tutor
-	 */
-	@Override
-	public CommonEntity changeCourseTutorBytutorId(Course course) throws Exception {
+		try {
+			mapper.insert(course.getCourse());
 			
-		CommonEntity commonEntity=new CommonEntity();
-		if(TextUtils.isNullId(course.getId()))
-		{
-			commonEntity.setMsg("must select a course to change");
-			commonEntity.setStatus(1);
-			return commonEntity;
+			List<Courseitem> courseitems = course.getCourseitems();
+
+			for (Courseitem courseitem : courseitems) {
+				courseitem.setCourseid(course.getCourse().getId());
+				itemMapper.insert(courseitem);
+			}
+			commonEntity.setBean(course);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			commonEntity.setBean(null);
+			commonEntity.setMsg("failed to add this course");
+			commonEntity.setStatus(16);
 		}
-		if(TextUtils.isNullId(course.getTutorid()))
-		{
-			commonEntity.setMsg("must select a tutor to be assigned");
-			commonEntity.setStatus(1);
-			return commonEntity;
-		}
-		
-		
-		mapper.updateByPrimaryKeySelective(course);
-		commonEntity.setBean(course);
-		commonEntity.setMsg("success");
-		commonEntity.setStatus(0);
+
 		return commonEntity;
 	}
 
+	@Override
+	public CommonEntity deleteCourse(Long id) {
+		CommonEntity commonEntity = new CommonEntity();
+		if (TextUtils.isNullId(id)) {
+			commonEntity.setMsg("must select a course to delete");
+			commonEntity.setStatus(17);
+			return commonEntity;
+		}
 
+		try {
+			mapper.deleteByPrimaryKey(id);
+			commonEntity.setBean(id);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			commonEntity.setBean(null);
+			commonEntity.setMsg("failed to delete this  course");
+			commonEntity.setStatus(18);
+		}
 
-
-
+		return commonEntity;
+	}
 
 	@Override
 	public CommonEntity updateCourse(Course choose) {
-		
-		CommonEntity commonEntity=new CommonEntity();
-		if(TextUtils.isNullId(choose.getId()))
-		{
+
+		CommonEntity commonEntity = new CommonEntity();
+		if (TextUtils.isNullId(choose.getId())) {
 			commonEntity.setMsg("must select a course to change");
-			commonEntity.setStatus(1);
+			commonEntity.setStatus(18);
 			return commonEntity;
 		}
-		
+
 		mapper.updateByPrimaryKey(choose);
-	
+
 		commonEntity.setBean(choose);
 		commonEntity.setMsg("success");
 		commonEntity.setStatus(0);
 		return commonEntity;
 	}
 
-
-
-
-
-
 	@Override
-	public List<Course> getCourseByStudentId(Long id) {
-		if(id==null)
-			return new ArrayList<Course>();
-		
-		List<Course> courses=mapper.selectCoursesByStudentId(id);
-		if(courses==null )
-			return new ArrayList<Course>();
-		
-		return courses;
+	public CommonEntity getCourseByStudentId(Long id) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+
+			List<Course> courses = mapper.selectCoursesByStudentId(id);
+			StudentVo studentVo = new StudentVo();
+			studentVo.setCourses(courses);
+			List<Finishstatus> finishstatus = new ArrayList<>();
+			studentVo.setFinishstatus(finishstatus);
+
+			if (courses == null)
+				courses = new ArrayList<Course>();
+
+			commonEntity.setBean(studentVo);
+
+			for (Course course : courses) {
+				FinishstatusExample example = new FinishstatusExample();
+				uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c = example.createCriteria();
+				c.andCourseidEqualTo(course.getId());
+				c.andStudentidEqualTo(id);
+				List<Finishstatus> selectByExample = finishMapper.selectByExample(example);
+				if (selectByExample != null && !selectByExample.isEmpty()) {
+					finishstatus.addAll(selectByExample);
+				}
+			}
+
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			commonEntity.setMsg("failed to courses by this student");
+			commonEntity.setStatus(21);
+		}
+		return commonEntity;
 	}
 
+	@Override
+	public CommonEntity getCourseById(Long id) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+			Course selectByPrimaryKey = mapper.selectByPrimaryKey(id);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+			commonEntity.setBean(selectByPrimaryKey);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(19);
 
+		}
 
+		return null;
+	}
 
+	@Override
+	public CommonEntity getAllItemByCourseId(Long id) {
+		CourseitemExample example = new CourseitemExample();
+		uk.co.jsmondswimmingpool.entity.CourseitemExample.Criteria createCriteria = example.createCriteria();
+		createCriteria.andCourseidEqualTo(id);
 
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+			List<Courseitem> selectByExample = itemMapper.selectByExample(example);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+			commonEntity.setBean(selectByExample);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(20);
 
+		}
+		return commonEntity;
+	}
 
-	
+	@Override
+	public CommonEntity updateItem(Courseitem item) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
 
-	
-	
+			int selectByExample = itemMapper.updateByPrimaryKey(item);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+			commonEntity.setBean(selectByExample);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(21);
+
+		}
+
+		return commonEntity;
+	}
+
+	@Override
+	public CommonEntity addItems(CourseItemVo item) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+				
+			CourseitemExample example = new CourseitemExample();
+			uk.co.jsmondswimmingpool.entity.CourseitemExample.Criteria createCriteria = example.createCriteria();
+		
+			createCriteria.andCourseidEqualTo(item.getCourseId());
+
+			itemMapper.deleteByExample(example);
+			for (Courseitem courseitem : item.getItems()) {
+				itemMapper.insert(courseitem);
+			}
+			commonEntity.setBean(item);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(21);
+
+		}
+
+		return commonEntity;
+	}
+
+	@Override
+	public CommonEntity deleteItem(Long id) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+				
+			itemMapper.deleteByPrimaryKey(id);
+			commonEntity.setMsg("success");
+			commonEntity.setStatus(0);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			commonEntity.setMsg("failure");
+			commonEntity.setStatus(21);
+
+		}
+
+		return commonEntity;
+	}
 
 }
