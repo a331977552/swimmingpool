@@ -60,26 +60,7 @@ public class CourseController {
 		return result;
 	}
 
-	
-	/*@RequestMapping(value = "/tutor/students", method = RequestMethod.POST)
-	public @ResponseBody CommonEntity getAllByTutor(@RequestBody(required=true) TutorVo vo) {
-		CommonEntity commonEntity = new CommonEntity();
-		try {
-			PageBean<Student> result = service.getAllByTutor(vo);
-			commonEntity.setBean(result);
-			commonEntity.setMsg("success");
-			commonEntity.setStatus(0);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			e.printStackTrace();
-			commonEntity.setMsg("failue :"+ message);			
-			commonEntity.setStatus(1);
-			commonEntity.setBean(null);
-		}
-		return commonEntity;
-	}*/
-	
-	
+
 	
 	
 	

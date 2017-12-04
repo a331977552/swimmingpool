@@ -109,6 +109,14 @@ public class StudentController {
 		return commonEntity;
 	}
 	
+	@RequestMapping(value="/finishcourse",method = RequestMethod.PATCH)
+	public @ResponseBody CommonEntity updateFinishCourseState(@RequestBody Finishstatus finish) {
+		
+		CommonEntity commonEntity = service.updateFinishCourseState(finish);
+		
+		return commonEntity;
+	}
+	
 	
 	@RequestMapping(value="/signin",method = RequestMethod.POST)
 	public @ResponseBody CommonEntity signIn(@RequestBody Attendance attendance) {

@@ -23,5 +23,9 @@ public class ManageController {
 	public @ResponseBody CommonEntity login(@RequestBody(required=false) Tutor tutor) {
 		return service.login(tutor);
 	}
+	@RequestMapping(value="/error",method=RequestMethod.POST)
+	public @ResponseBody CommonEntity error(@RequestBody(required=true) uk.co.jsmondswimmingpool.entity.custom.ErrorBean error) {
+		return service.error(error);
+	}
 	
 }

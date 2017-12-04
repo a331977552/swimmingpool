@@ -15,6 +15,7 @@ import uk.co.jsmondswimmingpool.entity.AttendanceExample;
 import uk.co.jsmondswimmingpool.entity.CourseChoosing;
 import uk.co.jsmondswimmingpool.entity.CourseChoosingExample;
 import uk.co.jsmondswimmingpool.entity.Finishstatus;
+import uk.co.jsmondswimmingpool.entity.FinishstatusExample;
 import uk.co.jsmondswimmingpool.entity.Student;
 import uk.co.jsmondswimmingpool.entity.StudentExample;
 import uk.co.jsmondswimmingpool.entity.StudentExample.Criteria;
@@ -189,9 +190,8 @@ public class StudentService implements IStudentService {
 		CommonEntity entity = new CommonEntity();
 
 		try {
-			System.out.println(finish);
 			int selectByExample = mapperFinish.insert(finish);
-			entity.setBean(null);
+			entity.setBean(finish);
 			entity.setMsg("success");
 			entity.setStatus(0);
 		} catch (Exception e) {
@@ -338,6 +338,26 @@ public class StudentService implements IStudentService {
 			commonEntity.setBean(achievement);
 			commonEntity.setMsg("failed to set up achievement");
 			commonEntity.setStatus(0);
+		}
+		return commonEntity;
+	}
+
+	@Override
+	public CommonEntity updateFinishCourseState(Finishstatus finish) {
+		CommonEntity commonEntity = new CommonEntity();
+		try {
+			FinishstatusExample example=new FinishstatusExample();
+			uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria createCriteria = example.createCriteria();
+			createCriteria.andCourseidEqualTo(finish.getCourseid());
+			createCriteria.andStudentidEqualTo(finish.getStudentid());
+			mapperFinish.deleteByExample(example);
+			commonEntity.setStatus(0);
+			commonEntity.setMsg("success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			commonEntity.setBean(null);
+			commonEntity.setMsg("failed to set up achievement");
+			commonEntity.setStatus(1012);
 		}
 		return commonEntity;
 	}

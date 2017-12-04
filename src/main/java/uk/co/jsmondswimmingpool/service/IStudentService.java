@@ -38,6 +38,8 @@ public interface IStudentService {
 	CommonEntity signIn(Attendance attendance);
 
 	CommonEntity achieve(Achievement achievement);
+
+	CommonEntity updateFinishCourseState(Finishstatus finish);
 	
 	
 

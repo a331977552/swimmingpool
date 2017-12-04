@@ -20,6 +20,7 @@ import uk.co.jsmondswimmingpool.entity.custom.CommonEntity;
 import uk.co.jsmondswimmingpool.entity.custom.CourseChangeVo;
 import uk.co.jsmondswimmingpool.entity.custom.CourseItemVo;
 import uk.co.jsmondswimmingpool.entity.custom.CourseVo;
+import uk.co.jsmondswimmingpool.entity.custom.PageBean;
 import uk.co.jsmondswimmingpool.entity.custom.StudentVo;
 import uk.co.jsmondswimmingpool.mapper.AchievementMapper;
 import uk.co.jsmondswimmingpool.mapper.CourseChoosingMapper;
@@ -52,7 +53,17 @@ public class CourseService implements ICourseService {
 	public CommonEntity getAll(CourseVo vo) {
 		CommonEntity commonEntity = new CommonEntity();
 		CourseExample example = new CourseExample();
-		example.setOrderByClause("id desc");
+		
+		CourseVo courseVo=new CourseVo();
+		
+		if(vo.getPageBean()!=null) {
+			Integer currentPage = vo.getPageBean().getCurrentPage();
+			example.setOrderByClause("id desc limit"+((currentPage+1)*vo.getPageBean().getPageSize())+","+vo.getPageBean().getPageSize());
+			courseVo.setPageBean(new PageBean(vo.getPageBean().getCurrentPage()+1, -1, vo.getPageBean().getPageSize()));
+		}else {			
+			example.setOrderByClause("id desc");
+		}
+		
 		Criteria criteria = example.createCriteria();
 		if (vo != null && vo.getCourse() != null && !TextUtils.isEmpty(vo.getCourse().getName())) {
 
@@ -113,8 +124,10 @@ public class CourseService implements ICourseService {
 				}
 			}
 			selectByExample.removeAll(removingCourse);
-			commonEntity.setBean(selectByExample);
-			
+		
+			courseVo.setCourseList(selectByExample);
+		
+			commonEntity.setBean(courseVo);
 			commonEntity.setMsg("success");
 			commonEntity.setStatus(0);
 		} catch (Exception e) {
@@ -133,8 +146,8 @@ public class CourseService implements ICourseService {
 	public CommonEntity chooseCourse(CourseChoosing choose) {
 		CommonEntity commonEntity = new CommonEntity();
 		try {
+				
 			courseChoosingMapper.insert(choose);
-
 			// delete finishing status
 			FinishstatusExample example2 = new FinishstatusExample();
 			uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c2 = example2.createCriteria();

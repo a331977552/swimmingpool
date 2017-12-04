@@ -17,7 +17,15 @@ public class CourseVo {
 	public void setStudentId(Long studentId) {
 		this.studentId = studentId;
 	}
+	private PageBean pageBean;
 	
+	
+	public PageBean getPageBean() {
+		return pageBean;
+	}
+	public void setPageBean(PageBean pageBean) {
+		this.pageBean = pageBean;
+	}
 	private Course course;
 	private List<Courseitem> courseitems;
 	public List<Courseitem> getCourseitems() {
@@ -49,6 +57,7 @@ public class CourseVo {
 	}
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date day;
+	private List<Course> courseList;
 	public Course getCourse() {
 		return course;
 	}
@@ -60,6 +69,13 @@ public class CourseVo {
 	}
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+	public void setCourseList(List<Course> courseList) {
+		this.courseList = courseList;
+		
+	}
+	public List<Course> getCourseList() {
+		return courseList;
 	}
 	
 	
