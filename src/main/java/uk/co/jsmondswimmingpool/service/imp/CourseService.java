@@ -93,6 +93,8 @@ public class CourseService implements ICourseService {
 
 				FinishstatusExample example2 = new FinishstatusExample();
 				uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria c2 = example2.createCriteria();
+				
+				
 				c2.andCourseidIn(values);
 				c2.andStudentidEqualTo(vo.getStudentId());
 				List<Finishstatus> selectByExample2 = finishMapper.selectByExample(example2);

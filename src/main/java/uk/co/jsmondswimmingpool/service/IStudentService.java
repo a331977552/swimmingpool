@@ -36,7 +36,8 @@ public interface IStudentService {
 	CommonEntity getAllByCourseId(Long id);
 
 	CommonEntity signIn(Attendance attendance);
-
+	CommonEntity unSignIn(Attendance attendance);
+	
 	CommonEntity achieve(Achievement achievement);
 
 	CommonEntity updateFinishCourseState(Finishstatus finish);

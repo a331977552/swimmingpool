@@ -125,6 +125,13 @@ public class StudentController {
 		
 		return commonEntity;
 	}
+	@RequestMapping(value="/unsignin",method = RequestMethod.POST)
+	public @ResponseBody CommonEntity unSignIn(@RequestBody Attendance attendance) {
+		
+		CommonEntity commonEntity = service.unSignIn(attendance);
+		
+		return commonEntity;
+	}
 	
 	@RequestMapping(value="/achievemnt",method = RequestMethod.POST)
 	public @ResponseBody CommonEntity signIn(@RequestBody Achievement achievement) {

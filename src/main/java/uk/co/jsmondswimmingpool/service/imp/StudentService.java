@@ -3,8 +3,7 @@ package uk.co.jsmondswimmingpool.service.imp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
+import java.util.List;import org.apache.xmlbeans.impl.piccolo.xml.AttributeDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -256,22 +255,55 @@ public class StudentService implements IStudentService {
 //					select * from attendance where studentid in (1,2) and courseid=1 and record_date="2017-11-19"
 					ids.add(student.getId());			
 				}
+				
+				
+				
+				
+				
+				
 				if(!ids.isEmpty())
 				{
-					AttendanceExample example3=new AttendanceExample();
-					uk.co.jsmondswimmingpool.entity.AttendanceExample.Criteria c = example3.createCriteria();
-					 c.andRecordDateEqualTo(new Date());
-					 c.andCourseidEqualTo(id);
-					 c.andStudentidIn(ids);
-					List<Attendance> selectByExample3 = attendanceMapper.selectByExample(example3);
-					for (Attendance attendance : selectByExample3) {
-						inner:for (StudentVo vo : listvo) {
-							if(vo.getStudent().getId().longValue()==attendance.getStudentid().longValue()) {
-								vo.setAttendance(attendance);
+					
+					List<StudentVo> removedStudents=new ArrayList<>();
+					List<Long> removedIds=new ArrayList<>();
+					
+					FinishstatusExample finishExample=new FinishstatusExample();
+					uk.co.jsmondswimmingpool.entity.FinishstatusExample.Criteria finishCriteria = finishExample.createCriteria();
+					finishCriteria.andStudentidIn(ids);
+					finishCriteria.andCourseidEqualTo(id);
+					List<Finishstatus> finishedStudents = mapperFinish.selectByExample(finishExample);
+					
+					for (Finishstatus finishstatus : finishedStudents) {
+						inner :for (StudentVo sv : listvo) {
+							if(sv.getStudent().getId()==finishstatus.getStudentid())
+							{
+								removedStudents.add(sv);
+								removedIds.add(sv.getStudent().getId());
 								break inner;
 							}
 						}
 					}
+					//remove students who has finished this course
+					ids.removeAll(removedIds);
+					listvo.removeAll(removedStudents);
+					if(!ids.isEmpty())
+					{
+						AttendanceExample example3=new AttendanceExample();
+						uk.co.jsmondswimmingpool.entity.AttendanceExample.Criteria c = example3.createCriteria();
+						 c.andRecordDateEqualTo(new Date());
+						 c.andCourseidEqualTo(id);
+						 c.andStudentidIn(ids);
+						List<Attendance> selectByExample3 = attendanceMapper.selectByExample(example3);
+						for (Attendance attendance : selectByExample3) {
+							inner:for (StudentVo vo : listvo) {
+								if(vo.getStudent().getId().longValue()==attendance.getStudentid().longValue()) {
+									vo.setAttendance(attendance);
+									break inner;
+								}
+							}
+						}
+					}
+					
 				}
 				commonEntity.setBean(listvo);
 				
@@ -315,7 +347,39 @@ public class StudentService implements IStudentService {
 		}
 		return commonEntity;
 	}
+	@Override
+	public CommonEntity unSignIn(Attendance attendance) {
+		CommonEntity commonEntity = new CommonEntity();
 
+		try {
+
+			if (TextUtils.isNullId(attendance.getCourseid(), attendance.getStudentid())) {
+				commonEntity.setBean(null);
+				commonEntity.setMsg("failed to unSignIn");
+				commonEntity.setStatus(1010);
+
+			} else {
+				
+				AttendanceExample example=new AttendanceExample();
+				uk.co.jsmondswimmingpool.entity.AttendanceExample.Criteria criteria = example.createCriteria();
+				criteria.andCourseidEqualTo(attendance.getCourseid());
+				criteria.andStudentidEqualTo(attendance.getStudentid());
+				criteria.andRecordDateEqualTo(attendance.getRecordDate());
+				List<Attendance> selectByExample = attendanceMapper.selectByExample(example);
+				if(selectByExample!=null&&selectByExample.size()>0) {
+					attendanceMapper.deleteByPrimaryKey(selectByExample.get(0).getId());					
+					commonEntity.setMsg("success");
+					commonEntity.setStatus(0);
+					commonEntity.setBean(selectByExample.get(0));
+				}
+			}
+		} catch (Exception e) {
+			commonEntity.setMsg("failed to unSignIn");
+			commonEntity.setStatus(1012);
+			e.printStackTrace();
+		}
+		return commonEntity;
+	}
 	@Override
 	public CommonEntity achieve(Achievement achievement) {
 		CommonEntity commonEntity = new CommonEntity();
